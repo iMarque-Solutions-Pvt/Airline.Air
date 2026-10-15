@@ -1,0 +1,143 @@
+﻿@model Alliance_Air_Desk.Models.Model.AccountModel
+
+@{
+    ViewBag.Title = "UserMaster";
+}
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="row">
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+     
+        <div class="panel">
+            <div class="panel-heading custom-header-panel">
+                <h3 class="panel-title roboto">User Management</h3>
+            </div>
+
+            <div class="panel-body">
+
+                <div class="row">
+                    <div class="col-xs-12 col-sm-6 col-md-6">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.userId, htmlAttributes: new { @class = "control-label" })
+                            @Html.EditorFor(model => model.userId, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.userId, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-6 col-md-6">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.password, htmlAttributes: new { @class = "control-label" })
+                            @Html.EditorFor(model => model.password, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.password, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                   
+                </div>
+
+                <div class="row">
+                    <div class="col-xs-12 col-sm-6 col-md-6">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.empCode, htmlAttributes: new { @class = "control-label" })
+                            @Html.EditorFor(model => model.empCode, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.empCode, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-6 col-md-6">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.empName, htmlAttributes: new { @class = "control-label" })
+                            @Html.EditorFor(model => model.empName, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.empName, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-xs-12 col-sm-4 col-md-4">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.privilege, htmlAttributes: new { @class = "control-label" })
+                            @Html.DropDownListFor(model => model.privilege, ViewBag.Privilege_List as IEnumerable<SelectListItem>, "Please select", new { @class = "form-control", @style = "width: 100%;height:auto" })
+                            @Html.ValidationMessageFor(model => model.privilege, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-4 col-md-4">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.region, htmlAttributes: new { @class = "control-label" })
+                            @Html.DropDownListFor(model => model.region, ViewBag.Region_List as IEnumerable<SelectListItem>, "Please select", new { @class = "form-control", @style = "width: 100%;height:auto" })
+                            @Html.ValidationMessageFor(model => model.region, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-4 col-md-4">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.status, htmlAttributes: new { @class = "control-label" })
+                            @Html.DropDownListFor(model => model.status, ViewBag.status_List as IEnumerable<SelectListItem>, "Please select", new { @class = "form-control", @style = "width: 100%;height:auto" })
+                            @Html.ValidationMessageFor(model => model.status, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
+
+                @if (Model != null)
+                {
+                    @Html.HiddenFor(model => model.guid, new { value = Model.guid })                    
+                }
+                                
+                <div class="form-group">
+                    <input type="submit" value="Save" name="btnsave" id="btnsave" class="btn btn-primary" />                    
+                    
+                </div>
+                
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+
+
+<script>
+
+    $(document).ready(function () {
+        toastr.options = {
+            "closeButton": true,
+            "debug": false,
+            "positionClass": "toast-top-right",
+            "onclick": null,
+            "showDuration": "1000",
+            "hideDuration": "1000",
+            "timeOut": "5000",
+            "extendedTimeOut": "1000",
+            "showEasing": "swing",
+            "hideEasing": "linear",
+            "showMethod": "fadeIn",
+            "hideMethod": "fadeOut",
+            "newestOnTop": true,
+            "progressBar": true,
+            "preventDuplicates": false
+        };
+
+        if ('@TempData["Message"]' != null && '@TempData["Message"]' != "") {
+        toastr.success('@TempData["Message"]')
+        }
+
+        if ('@TempData["ErrorMessage"]' != null && '@TempData["ErrorMessage"]' != "") {
+        toastr.error('@TempData["ErrorMessage"]')
+        }
+
+        if ('@TempData["Info"]' != null && '@TempData["Info"]' != "") {
+        toastr.info('@TempData["Info"]')
+        }
+
+        if ('@TempData["Warning"]' != null && '@TempData["Warning"]' != "") {
+        toastr.warning('@TempData["Warning"]')
+        }
+        });
+
+
+        </script>

@@ -1,0 +1,443 @@
+﻿@model Alliance_Air_Desk.Models.Model.DisruptionModel
+
+@{
+    ViewBag.Title = "Management";
+}
+
+@using (Html.BeginForm("Management", "Disruption", FormMethod.Post, new { enctype = "multipart/form-data", id = "frmDisruptionMgmt" }))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="row">
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        <div class="panel">
+            <div class="panel-heading custom-header-panel">
+                <h3 class="panel-title roboto">Disruption Management</h3>
+            </div>
+
+            <div class="panel-body">
+
+                <div class="row">
+                    <div class="col-xs-12 col-sm-6 col-md-6">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.flight_number, htmlAttributes: new { @class = "control-label" })
+                            @Html.EditorFor(model => model.flight_number, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.flight_number, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-6 col-md-6">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.intimation_refno, htmlAttributes: new { @class = "control-label" })
+                            @Html.EditorFor(model => model.intimation_refno, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.intimation_refno, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="row">
+                    <div class="col-xs-12 col-sm-6 col-md-6">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.disruption_type, htmlAttributes: new { @class = "control-label" })
+                            @Html.DropDownListFor(model => model.disruption_type, ViewBag.disruption_type_List as IEnumerable<SelectListItem>, "Please select", new { @class = "form-control", @style = "width: 100%;height:auto", required = "required" })
+                            @Html.ValidationMessageFor(model => model.disruption_type, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-6 col-md-6">
+                        <div class="form-group">
+                            @*@Html.LabelFor(model => model.rowid, htmlAttributes: new { @class = "control-label" })
+                            @Html.EditorFor(model => model.rowid, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.rowid, "", new { @class = "text-danger" })*@
+                        </div>
+                    </div>
+                </div>
+
+
+
+                <div class="row">
+                    <div class="col-xs-12 col-sm-6 col-md-6">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.origin, htmlAttributes: new { @class = "control-label" })
+                            @Html.DropDownListFor(model => model.origin, ViewBag.origin_list as IEnumerable<SelectListItem>, "Please select", new { @class = "form-control", @style = "width: 100%;height:auto" })
+                            @Html.ValidationMessageFor(model => model.origin, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-6 col-md-6">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.destination, htmlAttributes: new { @class = "control-label" })
+                            @Html.DropDownListFor(model => model.destination, ViewBag.destination_list as IEnumerable<SelectListItem>, "Please select", new { @class = "form-control dropdown-item", @style = "width: 100%;height:auto" })
+                            @Html.ValidationMessageFor(model => model.destination, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-xs-12 col-sm-6 col-md-6">
+                        <div class="form-group">   
+
+                            @Html.LabelFor(model => model.actual_departure, htmlAttributes: new { @class = "control-label" }) 
+                            <input type="datetime-local" asp-for="actual_departure" class="form-control" id="actual_departure"  name="actual_departure" value="@ViewBag.actual_departure" required />
+                            @Html.ValidationMessageFor(model => model.actual_departure, "", new { @class = "text-danger" })
+                         </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-6 col-md-6">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.actual_arrival, htmlAttributes: new { @class = "control-label" }) 
+                            <input type="datetime-local" asp-for="actual_arrival" class="form-control" id="actual_arrival" name="actual_arrival" value="@ViewBag.actual_arrival" required />
+                            @Html.ValidationMessageFor(model => model.actual_arrival, "", new { @class = "text-danger" })
+                            
+                        </div>
+                    </div>
+                </div>
+
+                 <div class="row">
+                    <div class="col-xs-12 col-sm-6 col-md-6">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.revised_origin, htmlAttributes: new { @class = "control-label" })
+                            @Html.DropDownListFor(model => model.revised_origin, ViewBag.revised_origin_list as IEnumerable<SelectListItem>, "Please select", new { @class = "form-control", @style = "width: 100%;height:auto" })
+                            @Html.ValidationMessageFor(model => model.revised_origin, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-6 col-md-6">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.revised_destination, htmlAttributes: new { @class = "control-label" })
+                            @Html.DropDownListFor(model => model.revised_destination, ViewBag.revised_destination_list as IEnumerable<SelectListItem>, "Please select", new { @class = "form-control dropdown-item", @style = "width: 100%;height:auto" })
+                            @Html.ValidationMessageFor(model => model.revised_destination, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-xs-12 col-sm-6 col-md-6">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.revised_departure, htmlAttributes: new { @class = "control-label" })
+                            <input type="datetime-local" asp-for="revised_departure" class="form-control" id="revised_departure" name="revised_departure" value="@ViewBag.revised_departure" required />
+                            @Html.ValidationMessageFor(model => model.revised_departure, "", new { @class = "text-danger" })
+
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-6 col-md-6">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.revised_arrival, htmlAttributes: new { @class = "control-label" })
+                            <input type="datetime-local" asp-for="revised_arrival" class="form-control" id="revised_arrival" name="revised_arrival" value="@ViewBag.revised_arrival" required />
+                            @Html.ValidationMessageFor(model => model.revised_arrival, "", new { @class = "text-danger" })
+
+                        </div>
+                    </div>
+                </div>
+                @if (@Session["Privilege"] != null)
+                {
+                    if (Convert.ToInt32(@Session["Privilege"]) <= 5)
+                    {
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-4 col-md-4">
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.sms, htmlAttributes: new { @class = "control-label" })
+                                @Html.DropDownListFor(model => model.sms, ViewBag.sms_action as IEnumerable<SelectListItem>, "Please select", new { @class = "form-control", @style = "width: 100%;height:auto" })
+                                @Html.ValidationMessageFor(model => model.sms, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-sm-4 col-md-4">
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.email, htmlAttributes: new { @class = "control-label" })
+                                @Html.DropDownListFor(model => model.email, ViewBag.email_action as IEnumerable<SelectListItem>, "Please select", new { @class = "form-control", @style = "width: 100%;height:auto" })
+                                @Html.ValidationMessageFor(model => model.email, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-sm-4 col-md-4">
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.out_calling, htmlAttributes: new { @class = "control-label" })
+                                @Html.DropDownListFor(model => model.out_calling, ViewBag.out_calling_action as IEnumerable<SelectListItem>, "Please select", new { @class = "form-control", @style = "width: 100%;height:auto" })
+                                @Html.ValidationMessageFor(model => model.out_calling, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+                    }
+                }
+                <div class="row">
+                    <div class="col-xs-12 col-sm-6 col-md-4">
+                        <div class="form-group">
+                           
+                            @Html.LabelFor(model => model.mail_received_time, htmlAttributes: new { @class = "control-label" }) 
+                            <input type="datetime-local" asp-for="mail_received_time" class="form-control" id="mail_received_time"  name="mail_received_time" value="@ViewBag.mail_received_time" required />
+                            @Html.ValidationMessageFor(model => model.mail_received_time, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-6 col-md-4">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.status, htmlAttributes: new { @class = "control-label" })
+                            @Html.DropDownListFor(model => model.status, ViewBag.status_list as IEnumerable<SelectListItem>, "Please select", new { @class = "form-control", @style = "width: 100%;height:auto" })
+                            @Html.ValidationMessageFor(model => model.status, "", new { @class = "text-danger" })
+                          
+                        </div>
+                    </div>
+                @if (@Session["Privilege"] != null)
+                {
+                    if (Convert.ToInt32(@Session["Privilege"]) <= 5)
+                    {
+                        <div class="col-xs-12 col-sm-6 col-md-4">
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.QC_status, htmlAttributes: new { @class = "control-label" })
+                                @Html.DropDownListFor(model => model.QC_status, ViewBag.QC_status_list as IEnumerable<SelectListItem>, "Please select", new { @class = "form-control", @style = "width: 100%;height:auto" })
+                                @Html.ValidationMessageFor(model => model.QC_status, "", new { @class = "text-danger" })
+
+                            </div>
+                        </div>
+                    }
+                }
+                </div>
+
+
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.remarks, htmlAttributes: new { @class = "control-label" })
+                    @Html.EditorFor(model => model.remarks, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.remarks, "", new { @class = "text-danger" })
+                </div>
+
+                @if (Model != null)
+                {
+
+                    @*@Html.EditorFor(model => model.guid, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.EditorFor(model => model.rowid, new { htmlAttributes = new { @class = "form-control" } })*@
+
+                    @Html.HiddenFor(model => model.guid, new { value = Model.guid })
+                    @Html.HiddenFor(model => model.rowid, new { value = Model.rowid })
+                }
+
+                <div class="form-group">
+                    <input type="button" value="Save" name="btnsave" id="btnsave" class="btn btn-primary" />
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+
+
+
+<script>
+    $(document).ready(function () {
+        $(function () {
+            $("#btnsave").click(function () {                
+                $("#frmDisruptionMgmt").validate();
+                if ($("#frmDisruptionMgmt").valid()) {
+                    $(".loadingDiv-parent").fadeIn(50);
+                    var DisruptionModel = new Object();
+                    DisruptionModel.rowid = $('#rowid').val();
+
+                    //alert($('#rowid').val())
+
+                    DisruptionModel.guid = $('#guid').val();
+                    DisruptionModel.flight_number = $('#flight_number').val();
+                    DisruptionModel.intimation_refno = $('#intimation_refno').val();
+                    DisruptionModel.origin = $('#origin').val();
+                    DisruptionModel.destination = $('#destination').val();
+                    DisruptionModel.actual_departure = $('#actual_departure').val();
+                    DisruptionModel.actual_arrival = $('#actual_arrival').val();
+                    DisruptionModel.revised_origin = $('#revised_origin').val();
+                    DisruptionModel.revised_destination = $('#revised_destination').val();
+                    DisruptionModel.revised_departure = $('#revised_departure').val();
+                    DisruptionModel.revised_arrival = $('#revised_arrival').val();
+                    DisruptionModel.disruption_type = $('#disruption_type').val();
+                    DisruptionModel.sms = $('#sms').val();
+                    DisruptionModel.email = $('#email').val();
+                    DisruptionModel.out_calling = $('#out_calling').val();
+                    DisruptionModel.mail_received_time = $('#mail_received_time').val();
+                    DisruptionModel.status = $('#status').val();
+                    DisruptionModel.remarks = $('#remarks').val();
+                    DisruptionModel.QC_status = $('#QC_status').val();
+
+                    if (DisruptionModel.origin == DisruptionModel.destination) {
+                        $("#origin").focus();
+                        toastr.error('Origin and Destination should not be same.')
+                        $(".loadingDiv-parent").fadeOut("slow");
+                        return;
+                    }
+                    if (DisruptionModel.revised_origin == DisruptionModel.revised_destination) {
+                        $("#revised_origin").focus();
+                        toastr.error('Revised Origin and Revised Destination should not be same.')
+                        $(".loadingDiv-parent").fadeOut("slow");
+                        return;
+                    }
+
+                   
+
+                    //if (InboundModel.mainType == null || InboundModel.mainType == '') {
+                    //    $("#mainType").focus();
+                    //    toastr.error('Please Select MainType')
+                    //    $(".loadingDiv-parent").fadeOut("slow");
+                    //    return;
+                    //}
+
+                    //if (InboundModel.subType == null || InboundModel.subType == '') {
+                    //    $("#subType").focus();
+                    //    toastr.error('Please Select SubType')
+                    //    $(".loadingDiv-parent").fadeOut("slow");
+                    //    return;
+                    //}
+
+                    //if (InboundModel.resolution == null || InboundModel.resolution == '') {
+                    //    $("#resolution").focus();
+                    //    toastr.error('Please Select Resolution')
+                    //    $(".loadingDiv-parent").fadeOut("slow");
+                    //    return;
+                    //}
+
+                    if (DisruptionModel.flight_number.length > 0) {
+                        $.ajax({
+                            type: "POST",
+                            url: '@Url.Content("~/")' + "Disruption/Management",
+                            data: JSON.stringify(DisruptionModel),
+                            contentType: "application/json;",
+                            dataType: "json",
+                            success: function (data) {
+
+                                if (data != null) {
+                                    //alert(JSON.stringify(data));
+                                    if (data != undefined) {
+                                        if (data.status == "success") {
+                                            toastr.success(data.msg)
+                                            $(".loadingDiv-parent").fadeOut("slow");
+                                            $.clearfields();
+                                        }
+                                        if (data.status == "error") {
+                                            toastr.error(data.msg)
+                                            $(".loadingDiv-parent").fadeOut("slow");
+                                        }
+                                    } else {
+                                        toastr.error('undefined')
+                                        $(".loadingDiv-parent").fadeOut("slow");
+                                    }
+                                } else {
+                                    $(".loadingDiv-parent").fadeOut("slow");
+                                    toastr.error('Something went wrong')
+                                    return;
+                                }
+
+                            },
+                            failure: function (response) {
+                                toastr.error(data.responseText)
+                                $(".loadingDiv-parent").fadeOut("slow");
+
+                            },
+                            error: function (response) {
+                                toastr.error(data.responseText)
+                                //console.log(data.responseText)
+                                $(".loadingDiv-parent").fadeOut("slow");
+                            }
+                        });
+                    }
+
+                    $(".loadingDiv-parent").fadeOut("slow");
+                }
+
+                });
+        });
+    });
+
+    $(document).ready(function () {
+        toastr.options = {
+            "closeButton": true,
+            "debug": false,
+            "positionClass": "toast-top-right",
+            "onclick": null,
+            "showDuration": "1000",
+            "hideDuration": "1000",
+            "timeOut": "5000",
+            "extendedTimeOut": "1000",
+            "showEasing": "swing",
+            "hideEasing": "linear",
+            "showMethod": "fadeIn",
+            "hideMethod": "fadeOut",
+            "newestOnTop": true,
+            "progressBar": true,
+            "preventDuplicates": false
+        };
+        //toastr.success('muju')
+
+        @*if ('@ViewData["Message"]' != null && '@ViewData["Message"]' != "") {
+            toastr.success('@ViewData["Message"]')
+        }
+
+        if ('@ViewData["ErrorMessage"]' != null && '@ViewData["ErrorMessage"]' != "") {
+            toastr.error('@ViewData["ErrorMessage"]')
+        }
+
+        if ('@ViewData["Info"]' != null && '@ViewData["Info"]' != "") {
+            toastr.info('@ViewData["Info"]')
+        }
+
+        if ('@ViewData["Warning"]' != null && '@ViewData["Warning"]' != "") {
+            toastr.warning('@ViewData["Warning"]')
+        }*@
+    });
+
+
+    //$(document).ready(function () {
+    //    $("#btnclear").click(function () {
+    //        $('#calledNumber').val('');
+    //        $("#pnr").val('');
+    //        $("#referenceId").val('');
+    //        $('#name').val('');
+    //        $('#callerCategory').val('');
+    //        $('#callingCountry').val('');
+    //        $('#language').val('');
+    //        $('#qrc').val('');
+    //        $('#mainType').val('');
+    //        $('#subType').val('');
+    //        $('#resolution').val('');
+    //        $.clearfields();
+    //    })
+    //});
+
+
+    $(document).ready(function () {
+        $.clearfields = function () {
+            
+            $('#rowid').val(0);
+            $('#guid').val('');
+            $('#flight_number').val('');
+            $('#intimation_refno').val('');
+            $('#origin').val('');
+            $('#destination').val('');
+            $("#actual_departure").val('');
+            $("#actual_arrival").val('');
+            $('#revised_origin').val('');
+            $('#revised_destination').val('');
+            $('#revised_departure').val('');
+            $('#revised_arrival').val('');
+            $('#disruption_type').val('');
+            $('#sms').val('');
+            $('#email').val('');
+            $('#out_calling').val('');
+            $('#remarks').val('');
+            $('#mail_received_time').val('');
+            $('#status').val('');
+            $('#QC_status').val('');
+            //$('input[type=checkbox]').prop('checked', false);
+
+
+            var uri = window.location.toString();
+            if (uri.indexOf("?") > 0) {
+                var clean_uri = uri.substring(0, uri.indexOf("?"));
+                window.history.replaceState({}, document.title, clean_uri);
+            }
+        }
+    });
+
+
+</script>

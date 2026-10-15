@@ -1,0 +1,183 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+
+
+
+<h4>Quick Menu</h4>
+
+<hr />
+
+
+<div class="social-box">
+    <div class="container">
+        <div class="row">
+
+            <div class="col-lg-3 col-xs-12 text-center">
+                <div class="box">
+                    @*<i class="glyphicon glyphicon-list-alt"></i>*@
+
+                    <p><img class="img-fluid" src="~/Images/logo/disruption.png" alt="Disruption"></p>                    
+
+                    <div class="box-title">
+                        <h3>Disruption Details</h3>
+                    </div>
+                    <div class="box-text">
+                        <span>Disruption Details...</span>
+                    </div>
+                    <div class="box-btn">
+                        <a href="~/Disruption/Details" class="btn btn-outline-primary" role="button">Go to page</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-xs-12  text-center">
+                <div class="box">
+                    <p><img class="img-fluid" src="~/Images/logo/dashboard.png" alt="Dashboard"></p>
+                    <div class="box-title">
+                        <h3>Dashboard</h3>
+                    </div>
+                    <div class="box-text">
+                        <span>Hourly Dashboard...</span>
+                    </div>
+                    <div class="box-btn">
+                        <a href="~/Dashboard/AgentReport" class="btn btn-outline-primary" role="button" >Go to Page</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-xs-12  text-center">
+                <div class="box">
+                    @*<i class="glyphicon glyphicon-stats"></i>*@
+                    <p><img class="img-fluid" src="~/Images/logo/chart.png" alt="chart"></p>
+                    <div class="box-title">
+                        <h3>Analytics</h3>
+                    </div>
+                    <div class="box-text">
+                        <span>Analytics by Disruption/QC...</span>
+                    </div>
+                    <div class="box-btn">
+                        <a href="~/Analytics/Index" class="btn btn-outline-primary" role="button">Go to Page</a>
+                    </div>
+                </div>
+            </div>
+
+           @* <div class="col-lg-4 col-xs-12 text-center">
+        <div class="box">
+            <i class="fa fa-facebook fa-3x" aria-hidden="true"></i>
+            <div class="box-title">
+                <h3>Facebook</h3>
+            </div>
+            <div class="box-text">
+                <span>Lorem ipsum dolor sit amet, id quo eruditi eloquentiam. Assum decore te sed. Elitr scripta ocurreret qui ad.</span>
+            </div>
+            <div class="box-btn">
+                <a href="#">Learn More</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4 col-xs-12 text-center">
+        <div class="box">
+            <i class="fa fa-pinterest-p fa-3x" aria-hidden="true"></i>
+            <div class="box-title">
+                <h3>Pinterest</h3>
+            </div>
+            <div class="box-text">
+                <span>Lorem ipsum dolor sit amet, id quo eruditi eloquentiam. Assum decore te sed. Elitr scripta ocurreret qui ad.</span>
+            </div>
+            <div class="box-btn">
+                <a href="#">Learn More</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4 col-xs-12 text-center">
+        <div class="box">
+            <i class="fa fa-google-plus fa-3x" aria-hidden="true"></i>
+            <div class="box-title">
+                <h3>Google</h3>
+            </div>
+            <div class="box-text">
+                <span>Lorem ipsum dolor sit amet, id quo eruditi eloquentiam. Assum decore te sed. Elitr scripta ocurreret qui ad.</span>
+            </div>
+            <div class="box-btn">
+                <a href="#">Learn More</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4 col-xs-12 text-center">
+        <div class="box">
+            <i class="fa fa-github fa-3x" aria-hidden="true"></i>
+            <div class="box-title">
+                <h3>Github</h3>
+            </div>
+            <div class="box-text">
+                <span>Lorem ipsum dolor sit amet, id quo eruditi eloquentiam. Assum decore te sed. Elitr scripta ocurreret qui ad.</span>
+            </div>
+            <div class="box-btn">
+                <a href="#">Learn More</a>
+            </div>
+        </div>
+    </div>*@
+
+        </div>
+    </div>
+</div>
+
+
+
+<style>
+    
+body{
+    background: #f2f2f2;
+    font-family: 'Poppins', sans-serif;
+}
+
+h3{
+    font-family: 'Poppins', sans-serif;
+}
+
+.social-box .box{
+    background: #FFF;
+    border-radius: 10px; 
+    padding: 40px 10px;
+    margin: 10px 0px;
+    cursor: pointer;
+    transition: all 0.5s ease-out;
+}
+
+.social-box .box:hover{
+   box-shadow: 0 0 6px #4183D7;
+}
+
+.social-box .box .box-text{
+    margin:20px 0px;
+    font-size: 15px;
+    line-height: 30px;
+}
+
+.social-box .box .box-btn a{
+    text-decoration: none;
+    color: #4183D7;
+    font-size: 16px;
+}
+
+.fa{
+     color:#4183D7;
+}
+.box i {
+    margin: 0 auto;
+    display: table;
+    background-color: #37345b;
+    width: 70px;
+    height: 60px;
+    border-radius: 8px;
+    font-size: 40px;
+    text-align: center;
+    color: #fff;
+    line-height: 70px;
+}
+.box h3{
+    color: #37345b;
+}
+</style>

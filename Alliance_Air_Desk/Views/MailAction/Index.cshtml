@@ -1,0 +1,895 @@
+﻿@model Alliance_Air_Desk.Models.Model.MailActionModel
+
+@{
+   ViewBag.Title = "Mail Action";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    
+}
+
+
+
+
+@using (Html.BeginForm()) 
+{
+    @Html.AntiForgeryToken()
+    <div class="row">
+      
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="panel">
+            <div class="panel-heading custom-header-panel">
+                <h3 class="panel-title roboto">Mail Action</h3>
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-md-5">
+                        <div class="input-group">
+                            <div class="input-group-btn bs-dropdown-to-select-group">
+                                <button type="button" class="btn btn-primary dropdown-toggle as-is bs-dropdown-to-select" data-toggle="dropdown" tabindex="-1">
+                                    <span data-bind="bs-drp-sel-label">Email</span>
+                                    <input type="hidden" name="hdSearchCriteria" id="hdSearchCriteria" data-bind="bs-drp-sel-value" value="Email">
+                                    <span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu" role="menu" style="max-height 300px;">
+                                    <li data-value="Email"><a href="#">Email </a></li>
+                                    <li data-value="ReferenceNo"><a href="#">Reference ID </a></li>
+                                    <li data-value="PNR"><a href="#">PNR </a></li>
+                                </ul>
+                            </div>
+                            <input type="text" id="searchInput" name="searchInput" value="@ViewBag.searchValue" class="form-control" aria-label="..." required>
+                            <span class="input-group-btn">
+                                <button class="btn btn-pri" type="button" id="search">Search</button>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-3 col-md-3" id="DivSearch">
+                        <div class="form-group">
+                            <input type="button" class="btn btn-primary" id="CntrlCallhistory" name="CntrlCallhistory" value="Show/Hide History">
+                        </div>
+                    </div>
+
+                    <div class="col-md-4 pull-right" id="DivFilter">
+                        <input type="text" id="myInput" onkeyup="myFunction()" class="form-control" placeholder="Search Call History with all fields">
+                        <script>
+                            $(document).ready(function () {
+                                $("#myInput").on("keyup", function () {
+                                    var value = $(this).val().toLowerCase();
+                                    $("#myTable .even").filter(function () {
+                                        $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                                    });
+                                });
+                            });
+                        </script>
+                    </div>
+                </div>
+                <br />
+                <div id="DivCallHistory" style="width:100%;" class="table table-responsive table-bordered table-sm">
+                    <table class="table table-responsive" style="width:100%;" id="myTable">
+                        <thead style="background:#3568ab;color:white">
+                            <tr>
+                                <th>View</th>
+                                <th>SNo</th>
+                                <th>Date</th>
+                                <th>Ref.ID</th>
+                                <th>PNR</th>
+                                <th>QRC</th>
+                                <th>Maintype</th>
+                                <th>Subtype</th>
+                                <th>Resolution</th>
+                                @*<th>Resolution 2</th>*@
+                            </tr>
+                        </thead>
+                        <tbody id="SetData">
+                            <tr id="LoadingStatus" style="color:red"></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                        <div class="row">
+                            <div class="col-xs-12 col-sm-6 col-md-6">
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.fromEmail, htmlAttributes: new { @class = "control-label" })
+                                    @Html.EditorFor(model => model.fromEmail, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.fromEmail, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-sm-6 col-md-6">
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.date_of_mail, htmlAttributes: new { @class = "control-label" })
+                                    <input type="datetime-local" asp-for="date_of_mail" class="form-control" id="date_of_mail" name="date_of_mail" value="@ViewBag.date_of_mail" required />
+                                    @Html.ValidationMessageFor(model => model.date_of_mail, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-xs-12 col-sm-4 col-md-4">
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.phoneNo, htmlAttributes: new { @class = "control-label" })
+                                    @Html.EditorFor(model => model.phoneNo, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.phoneNo, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+
+
+                            <div class="col-xs-12 col-sm-4 col-md-4">
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.referenceId, htmlAttributes: new { @class = "control-label" })
+                                    @Html.EditorFor(model => model.referenceId, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+                                    @Html.ValidationMessageFor(model => model.referenceId, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+
+                            <div class="col-xs-12 col-sm-4 col-md-4">
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.pnr, htmlAttributes: new { @class = "control-label" })
+                                    @Html.EditorFor(model => model.pnr, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.pnr, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.mailSubject, htmlAttributes: new { @class = "control-label" })
+                            @Html.EditorFor(model => model.mailSubject, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.mailSubject, "", new { @class = "text-danger" })
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.mailContent, htmlAttributes: new { @class = "control-label" })
+                            @Html.EditorFor(model => model.mailContent, new { htmlAttributes = new { @class = "form-control", style = "height:300px" } })
+                            @Html.ValidationMessageFor(model => model.mailContent, "", new { @class = "text-danger" })
+                        </div>
+
+                        <div class="row DivElement">
+                            <div class="col-xs-12 col-sm-4 col-md-2">
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.QRC, htmlAttributes: new { @class = "control-label" })
+                                    @Html.DropDownListFor(m => m.QRC, Model.QRC_List, "Please select", new { @class = "form-control" })
+                                    @Html.ValidationMessageFor(model => model.QRC, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-sm-4 col-md-2">
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.type_of_mail, htmlAttributes: new { @class = "control-label" })
+                                    @Html.DropDownListFor(m => m.type_of_mail, Model.type_of_mail_List, "Please select", new { @class = "form-control" })
+                                    @Html.ValidationMessageFor(model => model.type_of_mail, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-sm-4 col-md-2">
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.subType, htmlAttributes: new { @class = "control-label" })
+                                    @Html.DropDownListFor(m => m.subType, Model.subType_List, "Please select", new { @class = "form-control" })
+                                    @Html.ValidationMessageFor(model => model.subType, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-sm-4 col-md-3">
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.resolution, htmlAttributes: new { @class = "control-label" })
+                                    @Html.DropDownListFor(m => m.resolution, Model.resolution_List, "Please select", new { @class = "form-control" })
+                                    @Html.ValidationMessageFor(model => model.resolution, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-sm-4 col-md-3">
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.resolution2, htmlAttributes: new { @class = "control-label" })
+                                    @Html.DropDownListFor(m => m.resolution2, Model.resolution2_List, "Please select", new { @class = "form-control" })
+                                    @Html.ValidationMessageFor(model => model.resolution2, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.content_template, htmlAttributes: new { @class = "control-label" })
+                            @Html.EditorFor(model => model.content_template, new { htmlAttributes = new { @class = "form-control", style = "height:300px" } })
+                            @Html.ValidationMessageFor(model => model.content_template, "", new { @class = "text-danger" })
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.remarks, htmlAttributes: new { @class = "control-label" })
+                            @Html.EditorFor(model => model.remarks,  new { htmlAttributes = new { @class = "form-control"  } })
+                            @Html.ValidationMessageFor(model => model.remarks, "", new { @class = "text-danger" })
+                        </div>
+
+                            @if (Model != null)
+                            {
+                                @Html.HiddenFor(model => model.guid, new { value = Model.guid })
+                                @Html.HiddenFor(model => model.rowid, new { value = Model.rowid })
+                            }
+
+                        <div class="form-group">
+                            <input type="button" class="btn btn-primary" id="btnsaveContinue" name="btnsaveContinue" value="Save">
+
+                            <input type="button" class="btn btn-default" id="btnclear" name="btnclear" value="Clear">
+                        </div>
+                    </div>
+            </div>
+</div>
+
+
+
+<!-- Modal -->
+<div id="MailDetailsModal" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Details</h4>
+            </div>
+            <div class="modal-body">
+
+                <div class="row">
+                    <div class="col-xs-12 col-sm-4 col-md-4">
+                        <label style="font-weight:bold;">Email ID: </label>
+                    </div>
+                    <div class="col-xs-12 col-sm-4 col-md-8">
+                        <label id="lbl_EmailID" style="font-weight:bold;"></label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-12 col-sm-4 col-md-4">
+                        <label style="font-weight:bold;">Date of Email: </label>
+                    </div>
+                    <div class="col-xs-12 col-sm-4 col-md-8">
+                        <label id="lbl_EmailDate" style="font-weight:bold;"></label>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-xs-12 col-sm-4 col-md-4">
+                        <label style="font-weight:bold;">Phone No : </label>
+                    </div>
+                    <div class="col-xs-12 col-sm-4 col-md-8">
+                        <label id="lbl_phoneNo" style="font-weight:bold;"></label>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-xs-12 col-sm-4 col-md-4">
+                        <label style="font-weight:bold;">Reference Id : </label>
+                    </div>
+                    <div class="col-xs-12 col-sm-4 col-md-8">
+                        <label id="lbl_referenceId" style="font-weight:bold;"></label>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-xs-12 col-sm-4 col-md-4">
+                        <label style="font-weight:bold;">PNR: </label>
+                    </div>
+                    <div class="col-xs-12 col-sm-4 col-md-8">
+                        <label id="lbl_pnr" style="font-weight:bold;"></label>
+                    </div>
+                </div>
+
+
+                <div class="row">
+                    <div class="col-xs-12 col-sm-12 col-md-4">
+                        <label style="font-weight:bold;">Mail Subject : </label>
+                    </div>
+                    <div class="col-xs-12 col-sm-4 col-md-8">
+                        <label id="lbl_mailSubject" style="font-weight:bold;"></label>
+                    </div>
+                </div>
+
+
+                <div class="row">
+                    <div class="col-xs-12 col-sm-4 col-md-4">
+                        <label style="font-weight:bold;">Mail Content : </label>
+                    </div>
+                    <div class="col-xs-12 col-sm-4 col-md-8">
+                        <label id="lbl_mailContent" style="font-weight:bold;"></label>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-xs-12 col-sm-4 col-md-4">
+                        <label style="font-weight:bold;">QRC : </label>
+                    </div>
+                    <div class="col-xs-12 col-sm-4 col-md-8">
+                        <label id="lbl_Qrc" style="font-weight:bold;"></label>
+                    </div>
+                </div>
+
+
+                <div class="row">
+                    <div class="col-xs-12 col-sm-4 col-md-4">
+                        <label style="font-weight:bold;">Mail Type : </label>
+                    </div>
+                    <div class="col-xs-12 col-sm-4 col-md-8">
+                        <label id="lbl_mailType" style="font-weight:bold;"></label>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-xs-12 col-sm-4 col-md-4">
+                        <label style="font-weight:bold;">SubType : </label>
+                    </div>
+                    <div class="col-xs-12 col-sm-4 col-md-8">
+                        <label id="lbl_subType" style="font-weight:bold;"></label>
+                    </div>
+                </div>
+
+
+                <div class="row">
+                    <div class="col-xs-12 col-sm-4 col-md-4">
+                        <label style="font-weight:bold;">Resolution : </label>
+                    </div>
+                    <div class="col-xs-12 col-sm-4 col-md-8">
+                        <label id="lbl_resolution" style="font-weight:bold;"></label>
+                    </div>
+                </div>
+
+                @*<div class="row">
+                    <div class="col-xs-12 col-sm-4 col-md-4">
+                        <label style="font-weight:bold;">Resolution2 : </label>
+                    </div>
+                    <div class="col-xs-12 col-sm-4 col-md-8">
+                        <label id="lbl_resolution2" style="font-weight:bold;"></label>
+                    </div>
+                </div>*@
+
+
+                <div class="row">
+                    <div class="col-xs-12 col-sm-4 col-md-4">
+                        <label style="font-weight:bold;">Template Retrival : </label>
+                    </div>
+                    <div class="col-xs-12 col-sm-4 col-md-8">
+                        <label id="lbl_content_template" style="font-weight:bold;"></label>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-xs-12 col-sm-4 col-md-4">
+                        <label style="font-weight:bold;">Remarks : </label>
+                    </div>
+                    <div class="col-xs-12 col-sm-4 col-md-8">
+                        <label id="lbl_remarks" style="font-weight:bold;"></label>
+                    </div>
+                </div>
+
+
+                <div class="row">
+                    <div class="col-xs-12 col-sm-4 col-md-4">
+                        <label style="font-weight:bold;">LoggedBy : </label>
+                    </div>
+                    <div class="col-xs-12 col-sm-4 col-md-8">
+                        <label id="lbl_loggedBy" style="font-weight:bold;"></label>
+                    </div>
+                </div>
+
+
+                <div class="row">
+                    <div class="col-xs-12 col-sm-4 col-md-4">
+                        <label style="font-weight:bold;">LoggedTime : </label>
+                    </div>
+                    <div class="col-xs-12 col-sm-4 col-md-8">
+                        <label id="lbl_loggedTime" style="font-weight:bold;"></label>
+                    </div>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+}
+<div>
+    @*@Html.ActionLink("Back to List", "Details")*@
+</div>
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+
+<script>
+   
+
+    
+    $(document).ready(function () {
+        $("section:contains('xxx')").each(function () {
+            $(this).html(
+              $(this).html().replace(/xxx/g, "<span class='match-o'>xxx</span>")
+            );
+        });
+    });
+
+
+
+    var protocol = $(location).attr('protocol');
+    var host = $(location).attr('host');
+    var hostname = $(location).attr('hostname');
+    var pathName = $(location).attr('pathname').split('/')[1] + "/";
+    var appname;
+    if (hostname == 'localhost') {
+        appname = "";
+    }
+    else {
+        appname = pathName;
+    }
+
+
+    $(document).ready(function () {
+        toastr.options = {
+            "closeButton": true,
+            "debug": false,
+            "positionClass": "toast-top-right",
+            "onclick": null,
+            "showDuration": "1000",
+            "hideDuration": "1000",
+            "timeOut": "5000",
+            "extendedTimeOut": "1000",
+            "showEasing": "swing",
+            "hideEasing": "linear",
+            "showMethod": "fadeIn",
+            "hideMethod": "fadeOut",
+            "newestOnTop": true,
+            "progressBar": true,
+            "preventDuplicates": false
+        };
+
+        if ('@ViewData["Message"]' != null && '@ViewData["Message"]' != "") {
+            toastr.success('@ViewData["Message"]')
+        }
+
+        if ('@ViewData["ErrorMessage"]' != null && '@ViewData["ErrorMessage"]' != "") {
+            toastr.error('@ViewData["ErrorMessage"]')
+        }
+
+        if ('@ViewData["Info"]' != null && '@ViewData["Info"]' != "") {
+            toastr.info('@ViewData["Info"]')
+        }
+
+        if ('@ViewData["Warning"]' != null && '@ViewData["Warning"]' != "") {
+            toastr.warning('@ViewData["Warning"]')
+        }
+    });
+
+
+    $(document).ready(function () {
+        $(function () {
+           
+            $('#DivCallHistory').hide();
+            $('#DivFilter').hide();
+            $('#DivSearch').hide();
+        });
+    });
+
+    $(document).ready(function () {
+        $(function () {
+            $("#btnclear").click(function () {
+                $(".loadingDiv-parent").fadeIn(50);
+                var url = '@Url.Content("~/")' + 'MailAction/Index';
+                $(location).attr('href', url);
+                $(".loadingDiv-parent").fadeOut("slow");
+            });
+        });
+    });
+
+    function getMailInfo(ID) {
+        try {
+            var url = protocol + "//" + host + "/" + appname + "MailAction/GetPreviousMailInfoById?id=" + ID;
+            $("#ModalTitle").html("Previous Mail Information");
+            $.ajax({
+                type: "GET",
+                url: url,
+                success: function (data) {
+                    var obj = JSON.parse(data);
+                    $("#lbl_EmailID").text(obj.fromEmail);
+                    $("#lbl_EmailDate").text(obj.date_of_mail);
+                    $("#lbl_phoneNo").text(obj.phoneNo);
+                    $("#lbl_referenceId").text(obj.referenceId);
+                    $("#lbl_pnr").text(obj.pnr);
+                    $("#lbl_mailSubject").text(obj.mailSubject);
+                    $("#lbl_mailContent").text(obj.mailContent);
+                    $("#lbl_Qrc").text(obj.QRC);
+                    $("#lbl_mailType").text(obj.type_of_mail);
+                    $("#lbl_subType").text(obj.subType);
+                    $("#lbl_resolution").text(obj.resolution);
+                    $("#lbl_resolution2").text(obj.resolution2);
+                    $("#lbl_content_template").text(obj.content_template);
+                    $("#lbl_remarks").text(obj.remarks);
+                    $("#lbl_loggedBy").text(obj.loggedBy);
+                    $("#lbl_loggedTime").text(obj.loggedTime);
+
+                    $('#MailDetailsModal').modal();
+                }
+            })
+
+        } catch (errorMessage) {
+            toastr.error(errorMessage)
+        }
+    }
+   
+
+    $(document).ready(function () {
+        $(function () {
+            $("#btnsaveContinue").click(function () {
+                $(".loadingDiv-parent").fadeIn(50);
+                var MailActionModel = new Object();
+                MailActionModel.rowid = $('#rowid').val();
+                MailActionModel.guid = $('#guid').val();
+                MailActionModel.fromEmail = $('#fromEmail').val();
+                MailActionModel.date_of_mail = $('#date_of_mail').val();
+                MailActionModel.pnr = $('#pnr').val();
+                MailActionModel.phoneNo = $('#phoneNo').val();
+                MailActionModel.referenceId = $('#referenceId').val();
+                MailActionModel.mailSubject = $('#mailSubject').val();
+                MailActionModel.mailContent = $('#mailContent').val();
+                MailActionModel.QRC = $('#QRC').val();
+                MailActionModel.type_of_mail= $('#type_of_mail').val();
+                MailActionModel.subType = $('#subType').val();
+                MailActionModel.resolution = $('#resolution').val();
+                MailActionModel.resolution2 = $('#resolution2').val();
+                MailActionModel.content_template = $('#content_template').val();
+                MailActionModel.remarks = $('#remarks').val();
+ 
+                
+
+                if (MailActionModel.fromEmail == null || MailActionModel.fromEmail == '' || MailActionModel.fromEmail.length == 0) {
+                    $("#fromEmail").focus();
+                    toastr.error('Please Enter Email')
+                    $(".loadingDiv-parent").fadeOut("slow");
+                    return;
+                }
+                if (MailActionModel.date_of_mail == null || MailActionModel.date_of_mail == '') {
+                    $("#date_of_mail").focus();
+                    toastr.error('Please Enter Mail Date')
+                    $(".loadingDiv-parent").fadeOut("slow");
+                    return;
+                }
+                if (MailActionModel.mailSubject == null || MailActionModel.mailSubject == '' || MailActionModel.mailSubject.length == 0) {
+                    $("#mailSubject").focus();
+                    toastr.error('Please Enter Mail Subject')
+                    $(".loadingDiv-parent").fadeOut("slow");
+                    return;
+                }
+                if (MailActionModel.mailContent == null || MailActionModel.mailContent == '' || MailActionModel.mailContent.length == 0) {
+                    $("#mailSubject").focus();
+                    toastr.error('Please Enter Mail Content')
+                    $(".loadingDiv-parent").fadeOut("slow");
+                    return;
+                }
+
+
+                if (MailActionModel.QRC == null || MailActionModel.QRC == '') {
+                    $("#QRC").focus();
+                    toastr.error('Please Select QRC Type')
+                    $(".loadingDiv-parent").fadeOut("slow");
+                    return;
+                }
+
+               
+                if (MailActionModel.type_of_mail == null || MailActionModel.type_of_mail == '') {
+                    $("#type_of_mail").focus();
+                    toastr.error('Please Select Mail Type')
+                    $(".loadingDiv-parent").fadeOut("slow");
+                    return;
+                }
+
+                if (MailActionModel.subType == null || MailActionModel.subType == '') {
+                    $("#subType").focus();
+                    toastr.error('Please Select SubType')
+                    $(".loadingDiv-parent").fadeOut("slow");
+                    return;
+                }
+
+                if (MailActionModel.resolution == null || MailActionModel.resolution == '') {
+                    $("#resolution").focus();
+                    toastr.error('Please Select Resolution')
+                    $(".loadingDiv-parent").fadeOut("slow");
+                    return;
+                }
+
+
+               if (MailActionModel.fromEmail.length > 0) {
+                    $.ajax({
+                        type: "POST",
+                        url: '@Url.Content("~/")' + "MailAction/PostData",
+                        data: JSON.stringify(MailActionModel),
+                        contentType: "application/json;",
+                        dataType: "json",
+                        success: function (data) {
+
+                            if (data != null) {
+                                if (data != undefined) {
+                                    if (data.status == "success") {
+                                        toastr.success(data.msg)
+                                        $(".loadingDiv-parent").fadeOut("slow");
+                                        $("#referenceId").val(data.resultCode)
+                                        $("#fromEmail").val('');
+                                        $("#date_of_mail").val('');
+                                        $("#phoneNo").val('');
+                                        $("#pnr").val('');
+                                        $("#mailContent").val('');
+                                        $("#mailSubject").val('');
+                                        $("#type_of_mail").val('');
+                                        $("#subType").val('');
+                                        $("#resolution").val('');
+                                        $("#content_template").val('')
+                                        $("#remarks").val('');
+                                        $("#type_of_mail").prop("disabled", true);
+                                        $("#subType").prop("disabled", true);
+                                        $("#resolution").prop("disabled", true);
+                                        $("#type_of_mail").focus();
+                                        $("#resolution2").val('');
+                                        $("#resolution2").prop("disabled", true);
+                                    }
+                                    if (data.status == "error") {
+                                        toastr.error(data.msg)
+                                        $(".loadingDiv-parent").fadeOut("slow");
+                                    }
+                                } else {
+                                    toastr.error('undefined')
+                                    $(".loadingDiv-parent").fadeOut("slow");
+                                }
+                            } else {
+                                $(".loadingDiv-parent").fadeOut("slow");
+                                toastr.error('Something went wrong')
+                                return;
+                            }
+
+                        },
+                        failure: function (response) {
+                            toastr.error(data.responseText)
+                            $(".loadingDiv-parent").fadeOut("slow");
+
+                        },
+                        error: function (response) {
+                            toastr.error(data.responseText)
+                            console.log(data.responseText)
+                            $(".loadingDiv-parent").fadeOut("slow");
+                        }
+                    });
+                }
+                $(".loadingDiv-parent").fadeOut("slow");
+
+            });
+
+        });
+    });
+
+    
+    $(document).ready(function () {
+        $('#QRC').change(mainType);
+
+    });
+    function mainType() {
+
+        var url = '@Url.Content("~/")' + "Inbound/getMaintype";
+        var ddlsource = "#QRC";
+        var ddltarget = "#type_of_mail";
+        if ($(ddlsource).val() == "") {
+            toastr.error('Please Give valid Input!')
+            return false;
+        }
+        $.getJSON(url, { id: $(ddlsource).val() }, function (data) {
+            $(ddltarget).empty();
+            $(ddltarget).prop("disabled", false);
+            $(ddltarget).append("<option value=''>" + 'Please Select' + "</option>")
+            $.each(data, function (index, optionData) {
+                $(ddltarget).append("<option value='" + optionData.Value + "'>" + optionData.Text + "</option>");
+            });
+        });
+
+    }
+
+    $(document).ready(function () {
+        $("#type_of_mail").change(function () {
+            $("#subType").empty();
+            $("#resolution").empty();
+            $("#subType").prop("disabled", true);
+            $("#resolution").prop("disabled", true);
+            $("#resolution2").empty();
+            $("#resolution2").prop("disabled", true);
+            var url = '@Url.Content("~/")' + "Inbound/getSubtype";
+            var ddlsource = "#type_of_mail";
+            var ddltarget = "#subType";
+            if ($(ddlsource).val() == "") {
+                toastr.error('Please Give valid Input!')
+                return false;
+            }
+            $.getJSON(url, { id: $(ddlsource).val() }, function (data) {
+                $(ddltarget).empty();
+                $(ddltarget).prop("disabled", false);
+                $(ddltarget).append("<option value=''>" + 'Please Select' + "</option>")
+                $.each(data, function (index, optionData) {
+                    $(ddltarget).append("<option value='" + optionData.Value + "'>" + optionData.Text + "</option>");
+                });
+            });
+        });
+    });
+
+
+    $(document).ready(function () {
+        $("#subType").change(function () {
+            $("#resolution").empty();
+            $("#resolution").prop("disabled", true);
+            $("#resolution2").empty();
+            $("#resolution2").prop("disabled", true);
+            var url = '@Url.Content("~/")' + "Inbound/getresolution";
+            var ddlsource = "#subType";
+            var ddltarget = "#resolution";
+            if ($(ddlsource).val() == "") {
+                toastr.error('Please Give valid Input!')
+                return false;
+            }
+            $.getJSON(url, { id: $(ddlsource).val() }, function (data) {
+                $(ddltarget).empty();
+                $(ddltarget).prop("disabled", false);
+                $(ddltarget).append("<option value=''>" + 'Please Select' + "</option>")
+                $.each(data, function (index, optionData) {
+                    $(ddltarget).append("<option value='" + optionData.Value + "'>" + optionData.Text + "</option>");
+                });
+            });
+        });
+    });
+
+    $(document).ready(function () {
+        $("#resolution").change(function () {
+            $("#resolution2").empty();
+            $("#resolution2").prop("disabled", true);
+            var url = '@Url.Content("~/")' + "Inbound/getresolution2";
+            var ddlsource = "#resolution";
+            var ddltarget = "#resolution2";
+            if ($(ddlsource).val() == "") {
+                toastr.error('Please Give valid Input!')
+                return false;
+            }
+            $.getJSON(url, { id: $(ddlsource).val() }, function (data) {
+                $(ddltarget).empty();
+                $(ddltarget).prop("disabled", false);
+                $(ddltarget).append("<option value=''>" + 'Please Select' + "</option>")
+                $.each(data, function (index, optionData) {
+                    $(ddltarget).append("<option value='" + optionData.Value + "'>" + optionData.Text + "</option>");
+                });
+            });
+        });
+    });
+
+    @*$(document).ready(function () {
+        $("#type_of_mail").change(function () {
+            $("#subType").empty();
+            $("#resolution").empty();
+            $("#subType").prop("disabled", true);
+            $("#resolution").prop("disabled", true);
+            var url = '@Url.Content("~/")' + "MailAction/getSubtype";
+            var ddlsource = "#type_of_mail";
+            var ddltarget = "#subType";
+            if ($(ddlsource).val() == "") {
+                toastr.error('Please Give valid Input!')
+                return false;
+            }
+            $.getJSON(url, { id: $(ddlsource).val() }, function (data) {
+                $(ddltarget).empty();
+                $(ddltarget).prop("disabled", false);
+                $(ddltarget).append("<option value=''>" + 'Please Select' + "</option>")
+                $.each(data, function (index, optionData) {
+                    $(ddltarget).append("<option value='" + optionData.Value + "'>" + optionData.Text + "</option>");
+                });
+            });
+        });
+    });
+
+
+    $(document).ready(function () {
+        $("#subType").change(function () {
+            $("#resolution").empty();
+            $("#resolution").prop("disabled", true);
+            var url = '@Url.Content("~/")' + "MailAction/getresolution";
+            var ddlsource = "#subType";
+            var ddltarget = "#resolution";
+            if ($(ddlsource).val() == "") {
+                toastr.error('Please Give valid Input!')
+                return false;
+            }
+            $.getJSON(url, { id: $(ddlsource).val() }, function (data) {
+                $(ddltarget).empty();
+                $(ddltarget).prop("disabled", false);
+                $(ddltarget).append("<option value=''>" + 'Please Select' + "</option>")
+                $.each(data, function (index, optionData) {
+                    $(ddltarget).append("<option value='" + optionData.Value + "'>" + optionData.Text + "</option>");
+                });
+            });
+        });
+    });*@
+
+
+
+    $(document).ready(function () {
+        $("#search").click(function () {
+            $("#SetData").empty();
+            var searchtype = $("#hdSearchCriteria").val();
+            var input = $("#searchInput").val();
+            if (input.length == 0) {
+                $("#searchInput").focus();
+                toastr.error('Please Supply valid Input')
+                $(".loadingDiv-parent").fadeOut("slow");
+                $('#DivSearch').hide();
+                $('#DivCallHistory').hide();
+                $('#DivFilter').hide();
+                return;
+            }
+            $(".loadingDiv-parent").fadeIn(50);
+            var Email = $('#Email').val();
+            $("#LoadingStatus").html("Loading....");
+            $.get(protocol + "//" + host + "/" + appname + "MailAction/Get_Mail_History?searchno=" + input + "&searchtype=" + searchtype, null, DataBind);
+            
+            function DataBind(data) {
+
+                if (data.length > 0) {
+
+                    $('#DivSearch').show();
+                    $('#DivCallHistory').show();
+                    $('#DivFilter').show();
+
+                    var SetData = $("#SetData");
+                    for (var i = 0; i < data.length; i++) {
+                        var Data = "<tr class='even row_" + data[i].sno + "'>" +
+                            "<td>" + "<a href='#' data-toggle='tooltip' title='Click to View Full Details' class='btn-sm btn-warning' onclick='getMailInfo(" + data[i].id + ")'><span class='glyphicon glyphicon-eye-open' ></span></a>" + "</td>" +
+                            "<td>" + data[i].sno + "</td>" +
+                            "<td>" + data[i].date + "</td>" +
+                            "<td>" + data[i].referenceId + "</td>" +
+                            "<td>" + data[i].pnr + "</td>" +
+                            "<td>" + data[i].Qrc + "</td>" +
+                            "<td>" + data[i].maintype + "</td>" +
+                            "<td>" + data[i].subtype + "</td>" +
+                            "<td>" + data[i].resolution + "</td>" +
+                            /*"<td>" + data[i].resolution2 + "</td>" +*/
+                            "</tr>";
+                        SetData.append(Data);
+                        $("#LoadingStatus").html(" ");
+                    }
+                }
+                else {
+                    $('#DivSearch').hide();
+                    $('#DivCallHistory').hide();
+                    $('#DivFilter').hide();
+                }
+            }
+
+            $(".loadingDiv-parent").fadeOut("slow");
+            if (searchtype == "Email") {
+                $("#pnr").val('');
+                $("#referenceId").val('');
+                $("#fromEmail").val(input);
+            }
+            else if (searchtype == "ReferenceNo") {
+                $("#fromEmail").val('');
+                $("#pnr").val('');
+                $("#referenceId").val(input);
+
+            }
+            else if (searchtype == "PNR") {
+                $("#fromEmail").val('');
+                $("#referenceId").val('');
+                $("#pnr").val(input);
+            }
+        })
+    })
+
+    $('#CntrlCallhistory').click(function () {
+        $('#DivCallHistory').toggle('slow');
+    });
+
+
+    $(document).ready(function (e) {
+        $(document).on('click', '.bs-dropdown-to-select-group .dropdown-menu li', function (event) {
+            var $target = $(event.currentTarget);
+            $target.closest('.bs-dropdown-to-select-group')
+				.find('[data-bind="bs-drp-sel-value"]').val($target.attr('data-value'))
+				.end()
+				.children('.dropdown-toggle').dropdown('toggle');
+            $target.closest('.bs-dropdown-to-select-group')
+				.find('[data-bind="bs-drp-sel-label"]').text($target.attr('data-value'));/*$target.text()*/
+            console.log($target.text());
+            return false;
+        });
+
+    });
+
+
+
+</script>

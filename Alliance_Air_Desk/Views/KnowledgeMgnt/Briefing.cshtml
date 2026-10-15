@@ -1,0 +1,194 @@
+﻿@model Alliance_Air_Desk.Models.Model.KnowledgeMgntModel
+
+
+@{
+    ViewBag.Title = "Briefing";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+@using (Html.BeginForm("UpdateBriefing", "KnowledgeMgnt", FormMethod.Post, new { id = "briefingForm" }))
+{
+    @Html.AntiForgeryToken()
+
+    <style>
+        .custom-list-item {
+            border-color: transparent; /* Hide the border */
+            color: #000; /* Black text color */
+            font-weight: bold;
+        }
+    </style>
+    @*<div class="button-container">
+            <button class="custom-btn" id="briefingBtn"></button>
+        </div>*@
+    <div class="app-wrapper">
+        <center><h4 class="app-card-title">Brief Information</h4></center>
+
+
+
+        @if (Session["privilege"] != null)
+        {
+            if (Convert.ToInt32(Session["privilege"]) <=5)
+            {
+                <div class="row">
+                    <div class="col-xs-12 col-sm-4 col-md-12">
+                        @Html.LabelFor(model => model.BriefingText, htmlAttributes: new { @class = "control-label", id = "lblSearchNo" })
+                        @Html.TextAreaFor(model => model.BriefingText, new { @class = "form-control input-lg", id = "BriefingText", style = "resize: vertical; min-height: 50px; overflow-y: auto;" })
+                        @Html.ValidationMessageFor(model => model.BriefingText, "", new { @class = "text-danger" })
+                    </div>
+
+                    <div class="col-xs-12 col-sm-4 col-md-4" style="margin-top:25px">
+                        <div class="form-group">
+                            <input type="submit" value="Update" class="btn btn-primary" />
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+
+
+        <br />
+
+        <div class="row">
+            <div class="col-xs-12 col-sm-4 col-md-4">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.BriefingDate, htmlAttributes: new { @class = "control-label" })
+                    <input type="date" asp-for="BriefingDate" class="form-control" id="BriefingDate" name="BriefingDate" value="@ViewBag.fromDate" required />
+                    @Html.ValidationMessageFor(model => model.BriefingDate, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-4 col-md-4" style="margin-top:25px">
+                <div class="form-group">
+                    <a class="btn btn-primary" id="btnDetails">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                            <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
+                        </svg>  Search
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div style="margin-top: 25px;"></div>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <ul class="list-group">
+                        @if (ViewBag.FileContent != null)
+                        {
+                            string[] paragraphs = ViewBag.FileContent.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
+                            string[] colors = { "#f8d7dab5", "#d4edda", "#cce5ff", "#f8ffcd87" }; // Define a list of colors
+                            int colorIndex = 0;
+
+                            foreach (var paragraph in paragraphs)
+                            {
+                                string color = colors[colorIndex % colors.Length]; // Get color from the list
+                                <li class="list-group-item d-flex justify-content-between align-items-center custom-list-item" style="background-color: @color;">
+                                    @paragraph
+                                </li>
+
+                                colorIndex++; // Move to the next color
+                            }
+                        }
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+
+
+
+
+
+
+    </div>
+}
+@*<div id="txtFileContent" style="margin-top: 25px;">
+        @if (ViewBag.FileContent != null)
+        {
+            <pre>@Html.Raw(ViewBag.FileContent)</pre>
+        }
+    </div>*@
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+<script>
+    document.getElementById("BriefingText").addEventListener("input", function() {
+        this.style.height = "auto";
+        this.style.height = (this.scrollHeight) + "px";
+    });
+</script>
+<script>
+        $(function () {
+            $("#briefingForm").submit(function (e) {
+                var briefingText = $("#BriefingText").val();
+                if (!briefingText.trim()) {
+                    snackBar("Danger", "Please enter valid Briefing!", "exclamation", 5000, "0.5s", "tr");
+                    $("#BriefingText").focus();
+                    e.preventDefault(); // Prevent form submission
+                }
+            });
+        });
+$(function () {
+    $("#btnDetails").click(function () {
+        try {
+            $('.spinner').css('display', 'block').fadeIn();
+            var KnowledgeMgntModel = new Object();
+            KnowledgeMgntModel.BriefingDate = $('#BriefingDate').val(); // Ensure correct date format
+
+            if (KnowledgeMgntModel.BriefingDate == null || KnowledgeMgntModel.BriefingDate == '' || KnowledgeMgntModel.BriefingDate.length == 0) {
+                snackBar("danger", "Please give valid input!", "✘", 5000, "0.5s", "tr");
+                $('.spinner').css('display', 'block').fadeOut();
+                $("#BriefingDate").focus();
+                return;
+            }
+
+            $.ajax({
+                type: "POST",
+                url: '@Url.Content("~/")' + "KnowledgeMgnt/OpenFile",
+                data: JSON.stringify(KnowledgeMgntModel),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (response) {
+                    if (response.success) {
+                        var FileContent = response.fileContent;
+                        updateListItems(FileContent);
+                        snackBar("Success", "Data found successfully!", "exclamation", 5000, "0.5s", "tr");
+                        $('.spinner').css('display', 'block').fadeOut();
+                    } else {
+                        updateListItems("");
+                        snackBar("Danger", "Data not exist for the selected date!", "exclamation", 5000, "0.5s", "tr");
+                        $('.spinner').css('display', 'block').fadeOut();
+                    }
+                },
+                error: function () {
+                    updateListItems("");
+                    snackBar("Danger", "Error occurred!", "exclamation", 5000, "0.5s", "tr");
+                    $('.spinner').css('display', 'block').fadeOut();
+                }
+            });
+        } catch (errorMessage) {
+            snackBar("danger", errorMessage, "✘", 5000, "0.5s", "tr");
+            $('.spinner').css('display', 'block').fadeOut();
+        }
+    });
+});
+
+
+    function updateListItems(FileContent) {
+        var paragraphs = FileContent.split('\n');
+        var colors = ['#f8d7dab5', '#d4edda', '#cce5ff', '#f8ffcd87'];
+        var colorIndex = 0;
+
+        $('.list-group').empty(); // Clear existing list items
+
+        $.each(paragraphs, function (index, paragraph) {
+            var color = colors[colorIndex % colors.length];
+            var listItem = '<li class="list-group-item d-flex justify-content-between align-items-center custom-list-item" style="background-color: ' + color + ';">' + paragraph + '</li>';
+            $('.list-group').append(listItem);
+            colorIndex++;
+        });
+    }
+
+</script>
+
+

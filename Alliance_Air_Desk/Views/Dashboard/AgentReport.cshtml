@@ -1,0 +1,155 @@
+﻿@model Alliance_Air_Desk.Models.Model.DashboardModel
+
+
+
+@{
+    ViewBag.Title = "Agent Report";
+}
+
+@using (Html.BeginForm())
+{
+
+    @Html.AntiForgeryToken()
+
+    <h6>@ViewBag.DateSelection</h6>
+
+    @*<span id="btnRefresh" class="btn btn-primary btn-sm"><i class="glyphicon glyphicon-refresh"></i> Refresh</span>*@
+
+    @*<button type="button" class="pull-right btn btn-primary btn-sm" data-toggle="modal" data-target="#exampleModal">
+        <i class="glyphicon glyphicon-filter"></i> Filter
+    </button>*@
+
+    <div class="row">
+        <div class="col-xs-12 col-sm-6 col-md-10 ">
+            <div class="btn-group" data-toggle="buttons-radio">
+                @*<input type='hidden' name="attendy[]" value='default value'>*@
+                <button type="button" name="searchType" id="btnToday" class="btn btn-primary btn-check" data-bs-toggle="tooltip" data-bs-placement="left" title="Today" value="Today">Day</button>
+                <button type="button" name="searchType" id="btnWeek" class="btn btn-primary btn-check" data-bs-toggle="tooltip" data-bs-placement="left" title="One Week" value="One Week">WK</button>
+                <button type="button" name="searchType" id="btnMonth" class="btn btn-primary btn-check" data-bs-toggle="tooltip" data-bs-placement="left" title="One Month" value="One Month">MTH</button>
+                <button type="button" name="searchType" id="btnCustom" class="btn btn-primary btn-check" value="Custom" data-toggle="modal" data-target="#exampleModal">Custom</button>
+            </div>
+        </div>
+
+        <div class="col-xs-12 col-sm-6 col-md-2">
+            <span id="btnRefresh" class="btn btn-primary btn-sm"><i class="glyphicon glyphicon-refresh"></i> Refresh</span>
+        </div>
+    </div>
+    <br />
+
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Advanced Filter</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-6 col-md-6">
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.fromDate, htmlAttributes: new { @class = "control-label" })
+                                @Html.EditorFor(model => model.fromDate, new { htmlAttributes = new { @class = "form-control", } })
+                                @Html.ValidationMessageFor(model => model.fromDate, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-sm-6 col-md-6">
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.toDate, htmlAttributes: new { @class = "control-label" })
+                                @Html.EditorFor(model => model.toDate, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.toDate, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-12 col-md-12">
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.reportName, htmlAttributes: new { @class = "control-label" })
+                                @Html.DropDownListFor(m => m.reportName, Model.reporNametList, "Please select", new { @class = "form-control" })
+                                @Html.ValidationMessageFor(model => model.reportName, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <input type="submit" value="Fetch" class="btn btn-primary" width="100" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+           
+            @if (Model.hourly_dashboard != null)
+            {
+                if (Model.hourly_dashboard.Count > 0)
+                {
+                    @Html.Partial("_Hourly_Dashboard", Model.hourly_dashboard)
+                }
+            }             
+        </div>
+    </div>
+</div>
+<input id="searchType" name="searchType" type="hidden" value="" />
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+
+<script>
+        $('#btnRefresh').click(function () {
+            location.reload();
+        });
+</script>
+
+<script>
+//Hourly_Call_Received();
+$(document).ready(function () {
+    $("#searchType").val($("#btnToday").val());
+    $(".btn-check").click(function () {
+        var button = $(this).val();
+        if (button) {
+            if (button != 'Custom') {
+                $("#searchType").val(button);
+                var Analytics = new Object();
+                Analytics.searchType = $('#searchType').val();
+                window.location.href = '/Dashboard/AgentReport?from=' + $('#fromDate').val() + '&to=' + $('#toDate').val() + '&reportId=' + $('#reportName').val() + '&searchType=' + button;
+
+            }
+            else {
+                var Analytics = new Object();
+                Analytics.fromDate = $('#fromDate').val();
+                Analytics.toDate = $('#toDate').val();
+                Analytics.searchType = $('#searchType').val('Custom');
+
+                if (Analytics.searchType == "Custom") {
+                    if (Analytics.fromDate == null || Analytics.fromDate == '') {
+                        $("#fromDate").focus();
+                        toastr.error('Please Enter From Date')
+                        $(".loadingDiv-parent").fadeOut("slow");
+                        return;
+                    }
+
+                    if (Analytics.toDate == null || Analytics.toDate == '') {
+                        $("#toDate").focus();
+                        toastr.error('Please Enter To Date')
+                        $(".loadingDiv-parent").fadeOut("slow");
+                        return;
+                    }
+                }
+            }
+        }
+    });
+});
+
+</script>
+
+

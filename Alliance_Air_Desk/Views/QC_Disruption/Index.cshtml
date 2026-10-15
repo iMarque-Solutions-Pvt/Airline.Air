@@ -1,0 +1,293 @@
+﻿@model Alliance_Air_Desk.Models.Model.QC_DisruptionModel
+
+@{
+    ViewBag.Title = "QC Disruption";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@using (Html.BeginForm()) 
+{
+    @Html.AntiForgeryToken()
+
+    <div class="row">
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="panel">
+            <div class="panel-heading custom-header-panel">
+                <h3 class="panel-title roboto">Disruption Data Capturing</h3>
+            </div>
+            <div class="panel-body">
+                @*<div class="row DivPayment" style="margin-right:30px">
+                    <span class="label label-primary">Disruption Data Capturing</span>
+                    <hr />
+                </div>*@
+                <div class="row">
+                    <div class="col-xs-12 col-sm-4 col-md-6">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.resk, htmlAttributes: new { @class = "control-label" })
+                            @Html.EditorFor(model => model.resk, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.resk, "", new { @class = "text-danger" })
+
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-4 col-md-6">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.mailDate, htmlAttributes: new { @class = "control-label " })
+                            <input type="datetime-local" asp-for="mailDate" class="form-control" id="mailDate" name="mailDate" value="@ViewBag.mailDate" required />
+                            @Html.ValidationMessageFor(model => model.mailDate, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-12 col-sm-4 col-md-12">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.subject, htmlAttributes: new { @class = "control-label" })
+                            @Html.EditorFor(model => model.subject, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.subject, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-12 col-sm-4 col-md-4 ">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.travelDate, htmlAttributes: new { @class = "control-label" })
+                            <input type="datetime-local" asp-for="travelDate" class="form-control" id="travelDate" name="travelDate" value="@ViewBag.travelDate" required />
+                            @Html.ValidationMessageFor(model => model.travelDate, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-4 col-md-4 ">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.flightNo, htmlAttributes: new { @class = "control-label" })
+                            @Html.EditorFor(model => model.flightNo, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.flightNo, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-4 col-md-4">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.scenario, htmlAttributes: new { @class = "control-label" })
+                            @Html.DropDownListFor(model => model.scenario, ViewBag.scenario_list as IEnumerable<SelectListItem>, "Please select", new { @class = "form-control", @style = "width: 100%;height:auto" })
+                            @Html.ValidationMessageFor(model => model.scenario, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
+                <div class="row DivPayment" style="margin-right:30px">
+                    <span class="label label-primary">QC</span>
+                    <hr />
+                </div>
+                <div class="row">
+                    <div class="col-xs-12 col-sm-4 col-md-4 ">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.crm_Tagging, htmlAttributes: new { @class = "control-label" })
+                            @Html.DropDownListFor(model => model.crm_Tagging, ViewBag.crm_Tagging_list as IEnumerable<SelectListItem>, "Please select", new { @class = "form-control", @style = "width: 100%;height:auto" })
+                            @Html.ValidationMessageFor(model => model.crm_Tagging, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-4 col-md-4 ">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.sms_Sent, htmlAttributes: new { @class = "control-label" })
+                            @Html.DropDownListFor(model => model.sms_Sent, ViewBag.sms_Sent_list as IEnumerable<SelectListItem>, "Please select", new { @class = "form-control", @style = "width: 100%;height:auto" })
+                            @Html.ValidationMessageFor(model => model.sms_Sent, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-4 col-md-4 ">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.mail_Sent, htmlAttributes: new { @class = "control-label" })
+                            @Html.DropDownListFor(model => model.mail_Sent, ViewBag.mail_Sent_list as IEnumerable<SelectListItem>, "Please select", new { @class = "form-control", @style = "width: 100%;height:auto" })
+                            @Html.ValidationMessageFor(model => model.mail_Sent, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
+
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-4 col-md-12 ">
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.remarks, htmlAttributes: new { @class = "control-label" })
+                                @Html.EditorFor(model => model.remarks, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.remarks, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+                    @if (Model != null)
+                    {
+                        @Html.HiddenFor(model => model.guid, new { value = Model.guid })
+                        @Html.HiddenFor(model => model.rowid, new { value = Model.rowid })
+                    }
+
+                    <div class="form-group">
+                        <input type="button" class="btn btn-primary" id="btnsaveContinue" name="btnsaveContinue" value="Save">
+                    </div>
+                </div>
+            </div>
+        </div>
+}
+
+<div>
+    @*@Html.ActionLink("Back to List", "Index")*@
+</div>
+
+@section Scripts {
+@Scripts.Render("~/bundles/jqueryval")
+}
+
+<script>
+
+    $(document).ready(function () {
+        toastr.options = {
+            "closeButton": true,
+            "debug": false,
+            "positionClass": "toast-top-right",
+            "onclick": null,
+            "showDuration": "1000",
+            "hideDuration": "1000",
+            "timeOut": "5000",
+            "extendedTimeOut": "1000",
+            "showEasing": "swing",
+            "hideEasing": "linear",
+            "showMethod": "fadeIn",
+            "hideMethod": "fadeOut",
+            "newestOnTop": true,
+            "progressBar": true,
+            "preventDuplicates": false
+        };
+
+        if ('@ViewData["Message"]' != null && '@ViewData["Message"]' != "") {
+            toastr.success('@ViewData["Message"]')
+        }
+
+        if ('@ViewData["ErrorMessage"]' != null && '@ViewData["ErrorMessage"]' != "") {
+            toastr.error('@ViewData["ErrorMessage"]')
+        }
+
+        if ('@ViewData["Info"]' != null && '@ViewData["Info"]' != "") {
+            toastr.info('@ViewData["Info"]')
+        }
+
+        if ('@ViewData["Warning"]' != null && '@ViewData["Warning"]' != "") {
+            toastr.warning('@ViewData["Warning"]')
+        }
+    });
+
+
+    $(document).ready(function () {
+        $(function () {
+            $("#btnsaveContinue").click(function () {
+                $(".loadingDiv-parent").fadeIn(50);
+                var QC_DisruptionModel = new Object();
+                QC_DisruptionModel.rowid = $('#rowid').val();
+                QC_DisruptionModel.guid = $('#guid').val();
+                QC_DisruptionModel.resk = $('#resk').val();
+                QC_DisruptionModel.mailDate = $('#mailDate').val();
+                QC_DisruptionModel.subject = $('#subject').val();
+                QC_DisruptionModel.travelDate = $('#travelDate').val();
+                QC_DisruptionModel.flightNo = $('#flightNo').val();
+                QC_DisruptionModel.scenario = $('#scenario').val();
+                QC_DisruptionModel.crm_Tagging = $('#crm_Tagging').val();
+                QC_DisruptionModel.sms_Sent = $('#sms_Sent').val();
+                QC_DisruptionModel.mail_Sent = $('#mail_Sent').val();
+                QC_DisruptionModel.remarks = $('#remarks').val();
+
+
+                if (QC_DisruptionModel.resk == null || QC_DisruptionModel.resk == '' || QC_DisruptionModel.resk.length == 0) {
+                    $("#resk").focus();
+                    toastr.error('Please Enter resk Number')
+                    $(".loadingDiv-parent").fadeOut("slow");
+                    return;
+                }
+                if (QC_DisruptionModel.mailDate == null || QC_DisruptionModel.mailDate == '') {
+                    $("#mailDate").focus();
+                    toastr.error('Please Enter Mail Date')
+                    $(".loadingDiv-parent").fadeOut("slow");
+                    return;
+                }
+                if (QC_DisruptionModel.flightNo == null || QC_DisruptionModel.flightNo == '' || QC_DisruptionModel.flightNo.length == 0) {
+                    $("#flightNo").focus();
+                    toastr.error('Please Enter Flight Number')
+                    $(".loadingDiv-parent").fadeOut("slow");
+                    return;
+                }
+                if (QC_DisruptionModel.scenario == null || QC_DisruptionModel.scenario == '') {
+                    $("#scenario").focus();
+                    toastr.error('Please Select scenario Option')
+                    $(".loadingDiv-parent").fadeOut("slow");
+                    return;
+                }
+                if (QC_DisruptionModel.crm_Tagging == null || QC_DisruptionModel.crm_Tagging == '') {
+                    $("#crm_Tagging").focus();
+                    toastr.error('Please Select CRM Tagging option')
+                    $(".loadingDiv-parent").fadeOut("slow");
+                    return;
+                }
+                if (QC_DisruptionModel.sms_Sent == null || QC_DisruptionModel.sms_Sent == '') {
+                    $("#sms_Sent").focus();
+                    toastr.error('Please Select SMS Sent option')
+                    $(".loadingDiv-parent").fadeOut("slow");
+                    return;
+                }
+                if (QC_DisruptionModel.mail_Sent == null || QC_DisruptionModel.mail_Sent == '') {
+                    $("#mail_Sent").focus();
+                    toastr.error('Please Select Mail Sent Option')
+                    $(".loadingDiv-parent").fadeOut("slow");
+                    return;
+                }
+
+                if (QC_DisruptionModel.flightNo.length > 0) {
+                    $.ajax({
+                        type: "POST",
+                        url: '@Url.Content("~/")' + "QC_Disruption/PostData",
+                        data: JSON.stringify(QC_DisruptionModel),
+                        contentType: "application/json;",
+                        dataType: "json",
+                        success: function (data) {
+
+                            if (data != null) {
+                                if (data != undefined) {
+                                    if (data.status == "success") {
+                                        toastr.success(data.msg)
+                                        $(".loadingDiv-parent").fadeOut("slow");
+                                        //$("#referenceId").val(data.resultCode)
+                                 
+                                        $("#resk").val('');
+                                        $("#mailDate").val('');
+                                        $("#subject").val('');
+                                        $("#travelDate").val('');
+                                        $("#flightNo").val('');
+                                        $("#scenario").val('');
+                                        $("#crm_Tagging").val('');
+                                        $("#sms_Sent").val('');
+                                        $("#mail_Sent").val('')
+                                        $("#remarks").val('');
+
+                                    }
+                                    if (data.status == "error") {
+                                        toastr.error(data.msg)
+                                        $(".loadingDiv-parent").fadeOut("slow");
+                                    }
+                                } else {
+                                    toastr.error('undefined')
+                                    $(".loadingDiv-parent").fadeOut("slow");
+                                }
+                            } else {
+                                $(".loadingDiv-parent").fadeOut("slow");
+                                toastr.error('Something went wrong')
+                                return;
+                            }
+
+                        },
+                        failure: function (response) {
+                            toastr.error(data.responseText)
+                            $(".loadingDiv-parent").fadeOut("slow");
+
+                        },
+                        error: function (response) {
+                            toastr.error(data.responseText)
+                            console.log(data.responseText)
+                            $(".loadingDiv-parent").fadeOut("slow");
+                        }
+                    });
+                }
+                $(".loadingDiv-parent").fadeOut("slow");
+
+            });
+
+        });
+    });
+</script>

@@ -1,0 +1,31 @@
+﻿@*@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}*@
+@model IEnumerable<Alliance_Air_Desk.Models.Model.Mail_History>
+@using GridMvc.Html
+
+<span class="label label-primary">Call History</span>
+<div class="table-responsive">
+    <div style="width:100%;" class="table table-responsive" id="Grid">
+        @Html.Grid(Model).Columns(columns =>
+   {
+
+       columns.Add(c => c.sno).Titled("#").Filterable(false).SetWidth(3);
+       columns.Add(c => c.date).Titled("Date").Filterable(false);
+       columns.Add(c => c.loggedby).Titled("Loggedby").Filterable(false);
+       columns.Add(c => c.maintype).Titled("Maintype").Filterable(false);
+       columns.Add(c => c.subtype).Titled("Subtype").Filterable(false);
+       columns.Add(c => c.resolution).Titled("Resolution").Filterable(false);
+       columns.Add(c => c.remarks).Titled("Remarks").Filterable(false);
+
+
+   }).WithPaging(10).Sortable(false).EmptyText("No Record Found")
+    </div>
+</div>
+
+
+<link href="@Url.Content("~/Content/Gridmvc.css")" rel="stylesheet" />
+<script src="@Url.Content("~/Scripts/jquery-3.4.1.min.js")"></script>
+<script src="@Url.Content("~/Scripts/gridmvc.min.js")"></script>
+
+

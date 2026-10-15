@@ -1,0 +1,414 @@
+﻿@model Alliance_Air_Desk.Models.Model.ContentModel
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h3>SMS Content Template Manager</h3>
+<hr />
+
+@using (Html.BeginForm("Index", "Content", FormMethod.Post, new { enctype = "multipart/form-data", id = "frmContentMgmt" }))
+{
+    @Html.AntiForgeryToken()
+
+
+    <div class="form-horizontal">
+        @if (Session["Privilege"] != null)
+        {
+            if (Convert.ToInt32(Session["Privilege"]) == 1)
+            {
+                <a href="#" class="btn btn-info" title="New Process!" onclick="AddNew(0)">Add New</a>
+            }
+            else
+            {
+                <a href="#" class="btn btn-info" title="New Process!" onclick="AddNew(0)" disabled="disabled">Add New</a>
+            }
+        }
+
+        <a href="~/Content/Index" class="btn pull-right btn-success" data-toggle="tooltip" title="Reload!">
+            Reload
+            <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span>
+        </a>
+    </div>
+    <br /><br />
+
+    <div class="modal fade" id="Modal" style="margin-top:50px" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <a href="#" class="close" data-dismiss="modal">&times;</a>
+                    <h4 id="ModalTitle">Add New Process</h4>
+                </div>
+                <div class="modal-body">
+
+                    <form id="form">
+                        <fieldset id="SubmitForm">
+                            @if (Model != null)
+                            {
+                                @Html.HiddenFor(model => model.guid, new { value = Model.guid })
+                                @Html.HiddenFor(model => model.rowid, new { value = Model.rowid })
+
+                            }
+                            <div class="row">
+                                <div class="form-group col-lg-12">
+                                    @Html.LabelFor(model => model.disruption_type, htmlAttributes: new { @class = "control-label" })
+                                    @Html.DropDownListFor(model => model.disruption_type, ViewBag.disruption_type_list as IEnumerable<SelectListItem>, "Please select", new { @class = "form-control", @style = "width: 100%;height:auto" })
+                                    @Html.ValidationMessageFor(model => model.disruption_type, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group col-lg-12">
+                                    @Html.LabelFor(model => model.domestic_template, htmlAttributes: new { @class = "control-label" })  <span id="charlen_domestic" class="label label-primary pull-right"></span>
+                                    @Html.EditorFor(model => model.domestic_template, new { htmlAttributes = new { @class = "form-control", @rows = 5,@placeholder= "For Variable value use {0},{1},{2}....Character limit for the variable shall be between 0-30 characters. Variables Should not exceed more than 8. " } })
+                                    @Html.ValidationMessageFor(model => model.domestic_template, "", new { @class = "text-danger" })
+                                    @*<span class="label label-primary img-responsive">For Variable value use {#var#}.Character limit for the variable shall be between 0-30 characters. <br /> Variables ({#var#}) Should not exceed more than 8. </span>*@
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="form-group col-lg-12">
+                                    @Html.LabelFor(model => model.domestic_sample_sms, htmlAttributes: new { @class = "control-label" })
+                                    @Html.EditorFor(model => model.domestic_sample_sms, new { htmlAttributes = new { @class = "form-control", @rows = 5 } })
+                                    @Html.ValidationMessageFor(model => model.domestic_sample_sms, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="form-group col-lg-12">
+                                    @Html.LabelFor(model => model.international_template, htmlAttributes: new { @class = "control-label" }) <span id="charlen_international" class="label label-primary pull-right"></span>
+                                    @Html.EditorFor(model => model.international_template, new { htmlAttributes = new { @class = "form-control",  @rows = 5 } })
+                                    @Html.ValidationMessageFor(model => model.international_template, "", new { @class = "text-danger" })
+                                    @*<span class="label label-primary">For Variable value use {#var#}.Character limit for the variable shall be between 0-30 characters. <br /> Variables ({#var#}) Should not exceed more than 8. </span>*@
+
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="form-group col-lg-12">
+
+                                    @Html.LabelFor(model => model.international_sample_sms, htmlAttributes: new { @class = "control-label" })
+                                    @Html.EditorFor(model => model.international_sample_sms, new { htmlAttributes = new { @class = "form-control", @rows = 5 } })
+                                    @Html.ValidationMessageFor(model => model.international_sample_sms, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="form-group col-lg-12">
+                                    <a href="#" class="btn btn-block btn-danger" id="btnAdd"><span class="glyphicon glyphicon-ok-sign"></span>Save</a>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="modal fade" id="DeleteConfirmation">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <a href="#" class="close" data-dismiss="modal">&times;</a>
+                    <h4>Delete Template</h4>
+                </div>
+                <div class="modal-body">
+                    <h4>Are You Sure? You want to Delete this template.</h4>
+                </div>
+                <div class="modal-footer">
+                    <a href="#" class="btn btn-primary" data-dismiss="modal" id="r">Cancel</a>
+                    <a href="#" class="btn btn-danger" onclick="ConfirmButton()">Confirm</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    foreach (var item in Model._Content_Template)
+    {
+
+        <div class="panel panel-primary" id="@item.sno">
+            <div class="panel-heading">
+                <h1 class="panel-title" id="pnlTitle">
+                    @item.disruption_type
+                </h1>
+            </div>
+            <div class="panel-body">
+                <strong>S.No: </strong> @item.sno <br />
+
+                <span class="label label-primary">Domestic </span> <br />
+                <strong>Template: </strong> @item.domestic_template <br />
+                <strong>Sample Content: </strong> @item.domestic_sample_sms <br />
+                <br />
+                <br />
+                <span class="label label-primary">International </span><br />
+                <strong>Template: </strong> @item.international_template <br />
+                <strong>Sample Content: </strong> @item.international_sample_sms <br />
+
+            </div>
+            <div class="panel-footer">
+                <div class="row">
+                    <div class="col-xs-12"> 
+
+                        @if (Session["Privilege"] != null)
+                        {
+                            if (Convert.ToInt32(Session["Privilege"]) == 1)
+                            {
+                                <a href="#" title="Edit App Details" onclick="Edit(@item.rowid)"
+                                   class="btn pull-right btn-sm btn-default" id="btnEdit">
+                                    <i class="glyphicon glyphicon-edit"></i>
+                                </a>
+                                <a href="#" title="Make InActive" onclick="DeleteTemplate(@item.rowid)"
+                                   class="btn pull-right btn-sm btn-default">
+                                    <i class="glyphicon glyphicon-trash"></i>
+                                </a>
+                            }
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    
+
+}
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        toastr.options = {
+            "closeButton": true,
+            "debug": false,
+            "positionClass": "toast-top-right",
+            "onclick": null,
+            "showDuration": "1000",
+            "hideDuration": "1000",
+            "timeOut": "5000",
+            "extendedTimeOut": "1000",
+            "showEasing": "swing",
+            "hideEasing": "linear",
+            "showMethod": "fadeIn",
+            "hideMethod": "fadeOut",
+            "newestOnTop": true,
+            "progressBar": true,
+            "preventDuplicates": false
+        };
+
+        if ('@TempData["Message"]' != null && '@TempData["Message"]' != "") {
+            toastr.success('@TempData["Message"]')
+        }
+
+        if ('@TempData["ErrorMessage"]' != null && '@TempData["ErrorMessage"]' != "") {
+            toastr.error('@TempData["ErrorMessage"]')
+        }
+
+        if ('@TempData["Info"]' != null && '@TempData["Info"]' != "") {
+            toastr.info('@TempData["Info"]')
+        }
+
+        if ('@TempData["Warning"]' != null && '@TempData["Warning"]' != "") {
+            toastr.warning('@TempData["Warning"]')
+        }
+    });
+
+    var protocol = $(location).attr('protocol');
+    var host = $(location).attr('host');
+    var hostname = $(location).attr('hostname');
+    var pathName = $(location).attr('pathname').split('/')[1] + "/";
+    var appname;
+
+    if (hostname == 'localhost') {
+        appname = "";
+    }
+    else {
+        appname = pathName;
+    }
+
+    function AddNew(ID) {
+
+        $("#rowid").val(0);
+        $("#guid").val('');
+        $("#domestic_template").val('');
+        $("#domestic_sample_sms").val('');
+        $("#international_template").val('');
+        $("#international_sample_sms").val('');
+        $("#disruption_type option:selected").text("Please select");
+        $("#ModalTitle").html("Add New Template");
+        $("#charlen_domestic").text("Character length: " + 0);
+        $("#charlen_international").text("Character length: " + 0);
+
+        $("#Modal").modal("show");
+    }
+
+    function Edit(ID) {
+        try {
+            
+            var url = protocol + "//" + host + "/" + appname + "Content/GeTemplateById?id=" + ID;
+            $("#ModalTitle").html("Update Template");
+            $("#Modal").modal("show");
+            $.ajax({
+                type: "GET",
+                url: url,
+                success: function (data) {
+
+                    var obj = JSON.parse(data);
+                    $("#rowid").val(obj.rowid);
+                    $("#guid").val(obj.guid);
+                    $("#disruption_type option:selected").text(obj.disruption_type);
+                    $("#domestic_template").val(obj.domestic_template);
+                    $("#domestic_sample_sms").val(obj.domestic_sample_sms);
+                    $("#international_template").val(obj.international_template);
+                    $("#international_sample_sms").val(obj.international_sample_sms);
+                    $("#disruption_type option:selected").text(obj.disruption_type);
+
+
+                    var domestic = $("#domestic_template").val().length;
+                    var international = $("#international_template").val().length;
+
+
+                    if (domestic > 0) {
+                        $("#charlen_domestic").text("Character length: " + domestic);
+                    }
+
+                    if (international > 0) {
+                        $("#charlen_international").text("Character length: " + international);
+                    }
+                }
+            })
+
+        } catch (errorMessage) {
+            toastr.error(errorMessage)
+        }
+    }
+
+
+
+    var DeleteTemplate = function (ID) {
+        $("#rowid").val(ID);
+        $("#DeleteConfirmation").modal("show");
+    }
+    var ConfirmButton = function () {
+
+        var ID = $("#rowid").val();
+
+        $.ajax({
+            type: "POST",
+            url: protocol + "//" + host + "/" + appname + "/Content/DeleteTemplateByID?id=" + ID,
+            success: function (data) {
+                $("#DeleteConfirmation").modal("hide");
+                if (data != null) {
+                    if (data != undefined) {
+                        if (data.status == "success") {
+                            toastr.success(data.msg)                                                         
+                            window.setTimeout(function () { location.reload() }, 1000)
+                            $(".loadingDiv-parent").fadeOut("slow");
+                            $("#Modal").modal("hide");
+                        }
+                        if (data.status == "error") {
+                            toastr.error(data.msg)
+                            $(".loadingDiv-parent").fadeOut("slow");
+                        }
+                    } else {
+                        toastr.error('undefined')
+                        $(".loadingDiv-parent").fadeOut("slow");
+                    }
+                } else {
+                    $(".loadingDiv-parent").fadeOut("slow");
+                    toastr.error('Something went wrong')
+                    return;
+                }
+            }
+        })
+    }
+
+
+    $("#btnAdd").click(function () {
+
+        $("#frmContentMgmt").validate();
+        if ($("#frmContentMgmt").valid()) {
+            var data = $("#SubmitForm").serialize();
+            $.ajax({
+                type: "Post",
+                url: protocol + "//" + host + "/" + appname + "/Content/Add_Template",
+                data: data,
+                success: function (data) {
+                    
+                    if (data != null) {
+                        if (data != undefined) {
+                            if (data.status == "success") {
+                                toastr.success(data.msg)                                                             
+                                window.setTimeout(function () { location.reload() }, 3000)
+                                $(".loadingDiv-parent").fadeOut("slow");
+                                $("#Modal").modal("hide");
+                                
+                            }
+                            if (data.status == "error") {
+                                toastr.error(data.msg)
+                                $(".loadingDiv-parent").fadeOut("slow");
+                            }
+                        } else {
+                            toastr.error('undefined')
+                            $(".loadingDiv-parent").fadeOut("slow");
+                        }
+                    } else {
+                        $(".loadingDiv-parent").fadeOut("slow");
+                        toastr.error('Something went wrong')
+                        return;
+                    }
+
+
+                }
+            })
+        }
+    })
+
+    //function Search(ID) {
+    //    try {
+    //        var SearchText = $("#SearchText").val();
+    //        var url = protocol + "//" + host + "/" + appname + "Content/WebApps_SearchText?SearchText=" + SearchText;
+
+    //        $.ajax({
+    //            type: "Post",
+    //            url: url,
+    //            success: function (data) {
+    //            }
+    //        })
+
+    //    } catch (errorMessage) {
+    //        alert(errorMessage);
+    //    }
+    //}
+
+
+    $("#domestic_template").keyup(function () {
+        if ($(this).val().length > 1) {            
+            $("#charlen_domestic").text("Character length: " + $(this).val().length);
+        }
+    });
+      
+
+    $("#international_template").keyup(function () {
+        if ($(this).val().length > 1) {
+            $("#charlen_international").text("Character length: " + $(this).val().length);
+        }
+    });
+
+
+    //var maxLength = 15;
+    //$('textarea').keyup(function () {
+    //    var textlen = maxLength - $(this).val().length;
+    //    $('#rchars').text(textlen);
+    //});
+
+   
+ 
+
+</script>
+

@@ -1,0 +1,1534 @@
+﻿@model Alliance_Air_Desk.Models.Model.InboundModel
+
+@{
+    ViewBag.Title = "Inbound Calls";
+}
+
+
+<button onclick="topFunction()" id="myBtn" title="Go to top">Top</button>
+
+@using (Html.BeginForm("Index", "Inbound", FormMethod.Post, new { enctype = "multipart/form-data", id = "frmDesk" }))
+{
+    @Html.AntiForgeryToken()
+    <div class="row">
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="panel">
+            <div class="panel-heading custom-header-panel">
+                <h3 class="panel-title roboto">Inbound Calls</h3>
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-md-5">
+                        <div class="input-group">
+                            <div class="input-group-btn bs-dropdown-to-select-group">
+                                <button type="button" class="btn btn-primary dropdown-toggle as-is bs-dropdown-to-select" data-toggle="dropdown" tabindex="-1">
+                                    <span data-bind="bs-drp-sel-label">PhoneNo</span>
+                                    <input type="hidden" name="hdSearchCriteria" id="hdSearchCriteria" data-bind="bs-drp-sel-value" value="PhoneNo">
+                                    <span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu" role="menu" style="max-height:300px;">
+                                    <li data-value="PhoneNo"><a href="#">PhoneNo </a></li>
+                                    <li data-value="ReferenceNo"><a href="#">Reference No </a></li>
+                                    <li data-value="PNR"><a href="#">PNR </a></li>
+                                </ul>
+                            </div>
+                            <input type="text" id="searchInput" value="@ViewBag.SearchInput" class="form-control" />
+                            <span class="input-group-btn">
+                                <button class="btn btn-pri" type="button" id="search">Search</button>
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="col-xs-12 col-sm-3 col-md-3" id="DivSearch">
+                        <div class="form-group">
+                            <input type="button" class="btn btn-primary" id="CntrlCallhistory" name="CntrlCallhistory" value="Show/Hide History">
+                        </div>
+                    </div>
+
+
+                    <div class="col-md-4 pull-right" id="DivFilter">
+                        <input type="text" id="myInput" onkeyup="myFunction()" class="form-control" placeholder="Search Call History with all fields">
+                        <script>
+                            $(document).ready(function () {
+                                $("#myInput").on("keyup", function () {
+                                    var value = $(this).val().toLowerCase();
+                                    $("#myTable .even").filter(function () {
+                                        $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                                    });
+                                });
+                            });
+                        </script>
+                    </div>
+                </div>
+
+                <br />
+
+                <div id="DivCallHistory" style="width:100%;" class="table table-responsive table-bordered table-sm">
+                    <table class="table table-responsive" style="width:100%;" id="myTable">
+                        <thead style="background:#3568ab;color:white">
+                            <tr>
+                                <th>View</th>
+                                <th>SNo</th>
+                                <th>Date</th>
+                                <th>Ref.ID</th>
+                                <th>PNR</th>
+                                <th>Maintype</th>
+                                <th>Subtype</th>
+                                <th>Resolution</th>
+                                <th>HighlighttoSupervisor</th>
+                            </tr>
+                        </thead>
+                        <tbody id="SetData">
+                            <tr id="LoadingStatus" style="color:red"></tr>
+                        </tbody>
+                    </table>
+                </div>
+                @*<div id="partialviews">
+                        @if (Model._call_History != null)
+                        {
+                            if (Model._call_History.Count > 0)
+                            {
+                                @Html.Partial("_Inbound_Call_History", Model._call_History)
+                            }
+                        }
+                    </div>*@
+
+                <div class="row">
+                    <div class="col-xs-12 col-sm-4 col-md-4">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.phoneNo, htmlAttributes: new { @class = "control-label" })
+                            <input type="hidden" id="actualSearchInput" />
+
+                            <!-- Actual phone number - hidden -->
+                            <input type="hidden" id="actualPhoneNo" value="@Model.phoneNo" />
+
+                            <!-- Masked phone number - visible -->
+                            <input type="text"
+                                   id="phoneNo"
+                                   class="form-control"
+                                   @*readonly="readonly"*@
+                                   value="@Model.maskedPhoneNo" />
+
+                            @Html.ValidationMessageFor(model => model.phoneNo, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    @*<div class="col-xs-12 col-sm-1 col-md-1" style="margin-top:25px">
+                            <div class="form-group">
+                                <input type="button" class="btn btn-primary" id="btnPhonenoSearch" name="btnPhonenoSearch" value="Search">
+                            </div>
+                        </div>*@
+
+                    <div class="col-xs-12 col-sm-4 col-md-4">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.referenceId, htmlAttributes: new { @class = "control-label" })
+                            @Html.EditorFor(model => model.referenceId, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+                            @Html.ValidationMessageFor(model => model.referenceId, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="col-xs-12 col-sm-4 col-md-4">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.pnr, htmlAttributes: new { @class = "control-label" })
+                            @Html.EditorFor(model => model.pnr, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.pnr, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-xs-12 col-sm-6 col-md-6">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.name, htmlAttributes: new { @class = "control-label" })
+                            @Html.EditorFor(model => model.name, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.name, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-6 col-md-6">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.callerCategory, htmlAttributes: new { @class = "control-label" })
+                            @Html.DropDownListFor(m => m.callerCategory, Model.callerCategory_List, "Please select", new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.callerCategory, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row DivElement">
+                    <div class="col-xs-12 col-sm-4 col-md-4">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.callingState, htmlAttributes: new { @class = "control-label" })
+                            @Html.DropDownListFor(m => m.callingState, Model.callingState_List, "Please select", new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.callingState, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-4 col-md-4">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.language, htmlAttributes: new { @class = "control-label" })
+                            @Html.DropDownListFor(m => m.language, Model.language_List, "Please select", new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.language, "", new { @class = "text-danger" })
+
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-4 col-md-4">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.qrc, htmlAttributes: new { @class = "control-label" })
+                            @Html.DropDownListFor(m => m.qrc, Model.qrc_List, "Please select", new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.qrc, "", new { @class = "text-danger" })
+
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="row DivElement">
+                    <div class="col-xs-12 col-sm-4 col-md-3">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.mainType, htmlAttributes: new { @class = "control-label" })
+                            @Html.DropDownListFor(m => m.mainType, Model.mainType_List, "Please select", new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.mainType, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-4 col-md-3">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.subType, htmlAttributes: new { @class = "control-label" })
+                            @Html.DropDownListFor(m => m.subType, Model.subType_List, "Please select", new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.subType, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-4 col-md-3">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.resolution1, htmlAttributes: new { @class = "control-label" })
+                            @Html.DropDownListFor(m => m.resolution1, Model.resolution1_List, "Please select", new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.resolution1, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-4 col-md-3">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.CaseEscalated, htmlAttributes: new { @class = "control-label" })
+                            @Html.DropDownListFor(m => m.CaseEscalated, Model.Case_Escalated, "Please select", new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.CaseEscalated, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="row DivElement">
+                    <div class="col-xs-12 col-sm-4 col-md-4">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.journeyType, htmlAttributes: new { @class = "control-label" })
+                            @Html.DropDownListFor(m => m.journeyType, Model.journeyType_List, "Please select", new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.journeyType, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-4 col-md-4">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.origin, htmlAttributes: new { @class = "control-label" })
+                            @Html.DropDownListFor(m => m.origin, Model.origin_List, "Please select", new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.origin, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-4 col-md-4">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.destination, htmlAttributes: new { @class = "control-label" })
+                            @Html.DropDownListFor(m => m.destination, Model.destination_List, "Please select", new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.destination, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
+                <div class="row DivElement">
+                    <div class="col-xs-12 col-sm-4 col-md-4">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.flightNo, htmlAttributes: new { @class = "control-label" })
+                            @Html.EditorFor(model => model.flightNo, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.flightNo, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-4 col-md-2" style="margin-top:25px">
+                        <div class="form-group">
+                            <input type="button" class="btn btn-primary" data-toggle="modal" data-target="#other_service_modal" id="btnOtherService" name="btnOtherService" value="Other Services">
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-4 col-md-2">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Inb_status, htmlAttributes: new { @class = "control-label" })
+                            @Html.DropDownListFor(m => m.Inb_status, Model.Inb_status_List, "Please select", new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.Inb_status, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-4 col-md-2">
+                        @*<div class="form-group">
+                                @Html.LabelFor(model => model.penaltyAmt, htmlAttributes: new { @class = "control-label" })
+                                @Html.EditorFor(model => model.penaltyAmt, new { htmlAttributes = new { @class = "form-control", @type = "number", @readonly = "readonly" } })
+                                @Html.ValidationMessageFor(model => model.penaltyAmt, "", new { @class = "text-danger" })
+                            </div>*@
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.call_transfer, htmlAttributes: new { @class = "control-label" })
+                            @Html.DropDownListFor(m => m.call_transfer, Model.call_transfer_List, "Please select", new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.call_transfer, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-4 col-md-2">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.If_yes, htmlAttributes: new { @class = "control-label" })
+                            @Html.EditorFor(model => model.If_yes, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.If_yes, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Escalation_remarks, htmlAttributes: new { @class = "control-label" })
+                    @Html.EditorFor(model => model.Escalation_remarks, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Escalation_remarks, "", new { @class = "text-danger" })
+                </div>
+
+                <div class="row DivPayment" style="margin-right:30px">
+                    <span class="label label-primary">Payment</span>
+                    <hr />
+                </div>
+
+                <div class="row DivPayment">
+                    <div class="col-xs-12 col-sm-6 col-md-6">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.paymentType, htmlAttributes: new { @class = "control-label" })
+                            @Html.DropDownListFor(m => m.paymentType, Model.paymentType_List, "Please select", new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.paymentType, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-6 col-md-6">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.paymentCard, htmlAttributes: new { @class = "control-label" })
+                            @Html.DropDownListFor(m => m.paymentCard, Model.paymentCard_List, "Please select", new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.paymentCard, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
+                <div class="row DivPayment">
+                    <div class="col-xs-12 col-sm-4 col-md-4">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.cardType, htmlAttributes: new { @class = "control-label" })
+                            @Html.DropDownListFor(m => m.cardType, Model.cardType_List, "Please select", new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.cardType, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-4 col-md-4">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.payAmount, htmlAttributes: new { @class = "control-label" })
+                            @Html.EditorFor(model => model.payAmount, new { htmlAttributes = new { @class = "form-control", @type = "number" } })
+                            @Html.ValidationMessageFor(model => model.payAmount, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-4 col-md-4">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.bank, htmlAttributes: new { @class = "control-label" })
+                            @Html.EditorFor(model => model.bank, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.bank, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row DivPayment">
+                    <div class="col-xs-12 col-sm-6 col-md-6">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.payment_status, htmlAttributes: new { @class = "control-label" })
+                            @Html.DropDownListFor(m => m.payment_status, Model.payment_status_List, "Please select", new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.payment_status, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-6 col-md-6">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.transactionId, htmlAttributes: new { @class = "control-label" })
+                            @Html.EditorFor(model => model.transactionId, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.transactionId, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.remarks, htmlAttributes: new { @class = "control-label" })
+                    @Html.EditorFor(model => model.remarks, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.remarks, "", new { @class = "text-danger" })
+                </div>
+
+                <div class="form-group">
+                    <input type="button" class="btn btn-primary" id="btnsaveContinue" name="btnsaveContinue" value="Save / Continue">
+                    @if (Model.campaignId != null)
+                    {
+                        <input type="button" class="btn btn-info" id="btndispose" name="btndispose" value="Dispose Call">
+                    }
+                    <input type="button" class="btn btn-default" id="btnclear" name="btnclear" value="Clear">
+                </div>
+
+
+                @if (Model != null)
+                {
+                    @Html.HiddenFor(model => model.referenceId, new { value = Model.referenceId })
+                    @Html.HiddenFor(model => model.registerId, new { value = Model.registerId })
+                    @Html.HiddenFor(model => model.ameyo_userId, new { value = Model.ameyo_userId })
+                    @Html.HiddenFor(model => model.campaignId, new { value = Model.campaignId })
+                    @Html.HiddenFor(model => model.crtObjectId, new { value = Model.crtObjectId })
+                    @Html.HiddenFor(model => model.userCrtObjectId, new { value = Model.userCrtObjectId })
+                    @Html.HiddenFor(model => model.customerId, new { value = Model.customerId })
+                    @Html.HiddenFor(model => model.dialerSessionId, new { value = Model.dialerSessionId })
+                    @Html.HiddenFor(model => model.dispositionName, new { value = Model.dispositionName })
+                    @Html.HiddenFor(model => model.id, new { value = Model.id })
+                }
+            </div>
+        </div>
+    </div>
+
+
+    <div class="modal fade" id="other_service_modal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <a href="#" class="close" data-dismiss="modal">&times;</a>
+                    <h4>Other Services</h4>
+                </div>
+                <div class="modal-body">
+
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-6 col-md-6">
+                            <div class="form-group" id="checkboxContainer">
+                                @foreach (var item in Model.other_services_list)
+                                {
+                                    <input id="chk@(item.code)" name="other_service_checked" type="checkbox" value="@item.code" checked="@item.isChecked" />
+                                    <label class="form-check-label" for="chk@(item.code)">@item.name</label> <br />
+                                }
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <a href="#" class="btn btn-primary" data-dismiss="modal" id="r">Save & Close</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Modal -->
+    <div id="CallDetailsModal" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Details</h4>
+                </div>
+                <div class="modal-body">
+
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-4 col-md-4">
+                            <label style="font-weight:bold;">Phone No : </label>
+                        </div>
+                        <div class="col-xs-12 col-sm-4 col-md-8">
+                            <label id="lbl_phoneNo" style="font-weight:bold;"></label>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-4 col-md-4">
+                            <label style="font-weight:bold;">Reference Id : </label>
+                        </div>
+                        <div class="col-xs-12 col-sm-4 col-md-8">
+                            <label id="lbl_referenceId" style="font-weight:bold;"></label>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-4 col-md-4">
+                            <label style="font-weight:bold;">PNR: </label>
+                        </div>
+                        <div class="col-xs-12 col-sm-4 col-md-8">
+                            <label id="lbl_pnr" style="font-weight:bold;"></label>
+                        </div>
+                    </div>
+
+
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-12 col-md-4">
+                            <label style="font-weight:bold;">Name : </label>
+                        </div>
+                        <div class="col-xs-12 col-sm-4 col-md-8">
+                            <label id="lbl_name" style="font-weight:bold;"></label>
+                        </div>
+                    </div>
+
+
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-4 col-md-4">
+                            <label style="font-weight:bold;">Caller Category : </label>
+                        </div>
+                        <div class="col-xs-12 col-sm-4 col-md-8">
+                            <label id="lbl_callerCategory" style="font-weight:bold;"></label>
+                        </div>
+                    </div>
+
+
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-4 col-md-4">
+                            <label style="font-weight:bold;">Calling State : </label>
+                        </div>
+                        <div class="col-xs-12 col-sm-4 col-md-8">
+                            <label id="lbl_callingState" style="font-weight:bold;"></label>
+                        </div>
+                    </div>
+
+
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-4 col-md-4">
+                            <label style="font-weight:bold;">Language : </label>
+                        </div>
+                        <div class="col-xs-12 col-sm-4 col-md-8">
+                            <label id="lbl_language" style="font-weight:bold;"></label>
+                        </div>
+                    </div>
+
+
+
+
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-4 col-md-4">
+                            <label style="font-weight:bold;">QRC : </label>
+                        </div>
+                        <div class="col-xs-12 col-sm-4 col-md-8">
+                            <label id="lbl_qrc" style="font-weight:bold;"></label>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-4 col-md-4">
+                            <label style="font-weight:bold;">Main Type: </label>
+                        </div>
+                        <div class="col-xs-12 col-sm-4 col-md-8">
+                            <label id="lbl_mainType" style="font-weight:bold;"></label>
+                        </div>
+                    </div>
+
+
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-4 col-md-4">
+                            <label style="font-weight:bold;">SubType : </label>
+                        </div>
+                        <div class="col-xs-12 col-sm-4 col-md-8">
+                            <label id="lbl_subType" style="font-weight:bold;"></label>
+                        </div>
+                    </div>
+
+
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-4 col-md-4">
+                            <label style="font-weight:bold;">Resolution : </label>
+                        </div>
+                        <div class="col-xs-12 col-sm-4 col-md-8">
+                            <label id="lbl_resolution" style="font-weight:bold;"></label>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-4 col-md-4">
+                            <label style="font-weight:bold;">Highlight to Supervisor: </label>
+                        </div>
+                        <div class="col-xs-12 col-sm-4 col-md-8">
+                            <label id="lblHighlighttoSupervisor" style="font-weight:bold;"></label>
+                        </div>
+                    </div>
+
+
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-4 col-md-4">
+                            <label style="font-weight:bold;">Journey Type : </label>
+                        </div>
+                        <div class="col-xs-12 col-sm-4 col-md-8">
+                            <label id="lbl_journeyType" style="font-weight:bold;"></label>
+                        </div>
+                    </div>
+
+
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-4 col-md-4">
+                            <label style="font-weight:bold;">Origin : </label>
+                        </div>
+                        <div class="col-xs-12 col-sm-4 col-md-8">
+                            <label id="lbl_origin" style="font-weight:bold;"></label>
+                        </div>
+                    </div>
+
+
+
+
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-4 col-md-4">
+                            <label style="font-weight:bold;">Destination : </label>
+                        </div>
+                        <div class="col-xs-12 col-sm-4 col-md-8">
+                            <label id="lbl_destination" style="font-weight:bold;"></label>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-4 col-md-4">
+                            <label style="font-weight:bold;">Flight #: </label>
+                        </div>
+                        <div class="col-xs-12 col-sm-4 col-md-8">
+                            <label id="lbl_flightNo" style="font-weight:bold;"></label>
+                        </div>
+                    </div>
+
+
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-4 col-md-4">
+                            <label style="font-weight:bold;">Payment Type : </label>
+                        </div>
+                        <div class="col-xs-12 col-sm-4 col-md-8">
+                            <label id="lbl_paymentType" style="font-weight:bold;"></label>
+                        </div>
+                    </div>
+
+
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-4 col-md-4">
+                            <label style="font-weight:bold;">Payment Card : </label>
+                        </div>
+                        <div class="col-xs-12 col-sm-4 col-md-8">
+                            <label id="lbl_paymentCard" style="font-weight:bold;"></label>
+                        </div>
+                    </div>
+
+
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-4 col-md-4">
+                            <label style="font-weight:bold;">Card Type : </label>
+                        </div>
+                        <div class="col-xs-12 col-sm-4 col-md-8">
+                            <label id="lbl_cardType" style="font-weight:bold;"></label>
+                        </div>
+                    </div>
+
+
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-4 col-md-4">
+                            <label style="font-weight:bold;">Pay Amount : </label>
+                        </div>
+                        <div class="col-xs-12 col-sm-4 col-md-8">
+                            <label id="lbl_payAmount" style="font-weight:bold;"></label>
+                        </div>
+                    </div>
+
+
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-4 col-md-4">
+                            <label style="font-weight:bold;">Bank : </label>
+                        </div>
+                        <div class="col-xs-12 col-sm-4 col-md-8">
+                            <label id="lbl_bank" style="font-weight:bold;"></label>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-4 col-md-4">
+                            <label style="font-weight:bold;">Payment Status: </label>
+                        </div>
+                        <div class="col-xs-12 col-sm-4 col-md-8">
+                            <label id="lbl_payment_status" style="font-weight:bold;"></label>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-4 col-md-4">
+                            <label style="font-weight:bold;">Payment TransactionId: </label>
+                        </div>
+                        <div class="col-xs-12 col-sm-4 col-md-8">
+                            <label id="lbl_transactionId" style="font-weight:bold;"></label>
+                        </div>
+                    </div>
+
+
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-4 col-md-4">
+                            <label style="font-weight:bold;">Remarks : </label>
+                        </div>
+                        <div class="col-xs-12 col-sm-4 col-md-8">
+                            <label id="lbl_remarks" style="font-weight:bold;"></label>
+                        </div>
+                    </div>
+
+
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-4 col-md-4">
+                            <label style="font-weight:bold;">LoggedBy : </label>
+                        </div>
+                        <div class="col-xs-12 col-sm-4 col-md-8">
+                            <label id="lbl_loggedBy" style="font-weight:bold;"></label>
+                        </div>
+                    </div>
+
+
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-4 col-md-4">
+                            <label style="font-weight:bold;">LoggedTime : </label>
+                        </div>
+                        <div class="col-xs-12 col-sm-4 col-md-8">
+                            <label id="lbl_loggedTime" style="font-weight:bold;"></label>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+}
+<div>
+    @Html.ActionLink("Back to List", "Inbound_Data")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+
+
+<script>
+
+    var protocol = $(location).attr('protocol');
+    var host = $(location).attr('host');
+    var hostname = $(location).attr('hostname');
+    var pathName = $(location).attr('pathname').split('/')[1] + "/";
+    var appname;
+    if (hostname == 'localhost') {
+        appname = "";
+    }
+    else {
+        appname = pathName;
+    }
+
+
+    $(document).ready(function () {
+        toastr.options = {
+            "closeButton": true,
+            "debug": false,
+            "positionClass": "toast-top-right",
+            "onclick": null,
+            "showDuration": "1000",
+            "hideDuration": "1000",
+            "timeOut": "5000",
+            "extendedTimeOut": "1000",
+            "showEasing": "swing",
+            "hideEasing": "linear",
+            "showMethod": "fadeIn",
+            "hideMethod": "fadeOut",
+            "newestOnTop": true,
+            "progressBar": true,
+            "preventDuplicates": false
+        };
+
+        if ('@ViewData["Message"]' != null && '@ViewData["Message"]' != "") {
+            toastr.success('@ViewData["Message"]')
+        }
+
+        if ('@ViewData["ErrorMessage"]' != null && '@ViewData["ErrorMessage"]' != "") {
+            toastr.error('@ViewData["ErrorMessage"]')
+        }
+
+        if ('@ViewData["Info"]' != null && '@ViewData["Info"]' != "") {
+            toastr.info('@ViewData["Info"]')
+        }
+
+        if ('@ViewData["Warning"]' != null && '@ViewData["Warning"]' != "") {
+            toastr.warning('@ViewData["Warning"]')
+        }
+    });
+
+
+    $(document).ready(function () {
+        $(function () {
+
+            $(".DivPayment").hide();
+            $('#DivCallHistory').hide();
+            $('#DivFilter').hide();
+            $('#DivSearch').hide();
+            $('#If_yes').attr('readonly', 'true');
+        });
+    });
+
+    $(document).ready(function () {
+        $(function () {
+            $("#btnclear").click(function () {
+                $(".loadingDiv-parent").fadeIn(50);
+                var url = '@Url.Content("~/")' + 'Inbound/Index';
+                $(location).attr('href', url);
+                $(".loadingDiv-parent").fadeOut("slow");
+            });
+        });
+    });
+
+
+    function getCallInfo(ID) {
+        try {
+            var url = protocol + "//" + host + "/" + appname + "Inbound/GetPreviousCallInfoById?id=" + ID;
+            $("#ModalTitle").html("Previous Call Information");
+            $.ajax({
+                type: "GET",
+                url: url,
+                success: function (data) {
+                    var obj = JSON.parse(data);
+                    var phone = String(obj.phoneNo || "").trim();
+                    if (phone.length > 4) {
+                        phone = "*".repeat(phone.length - 4) + phone.slice(-4);
+                    }
+                    $("#lbl_phoneNo").text(phone);
+                    $("#lbl_referenceId").text(obj.referenceId);
+                    $("#lbl_pnr").text(obj.pnr);
+                    $("#lbl_name").text(obj.name);
+                    $("#lbl_callerCategory").text(obj.callerCategory);
+                    $("#lbl_callingState").text(obj.callingState);
+                    $("#lbl_language").text(obj.language);
+                    $("#lbl_qrc").text(obj.qrc);
+                    $("#lbl_mainType").text(obj.mainType);
+                    $("#lbl_subType").text(obj.subType);
+                    $("#lbl_resolution").text(obj.resolution1);
+                    $("#lblHighlighttoSupervisor").text(obj.CaseEscalated);
+                    $("#lbl_other_services").text(obj.other_services);
+                    $("#lbl_journeyType").text(obj.journeyType);
+                    $("#lbl_origin").text(obj.origin);
+                    $("#lbl_destination").text(obj.destination);
+                    $("#lbl_flightNo").text(obj.flightNo);
+                    $("#lbl_paymentType").text(obj.paymentType);
+                    $("#lbl_paymentCard").text(obj.paymentCard);
+                    $("#lbl_cardType").text(obj.cardType);
+                    $("#lbl_payAmount").text(obj.payAmount);
+                    $("#lbl_bank").text(obj.bank);
+                    $("#lbl_payment_status").text(obj.payment_status);
+                    $("#lbl_transactionId").text(obj.transactionId);
+                    $("#lbl_remarks").text(obj.remarks);
+                    $("#lbl_loggedBy").text(obj.loggedBy);
+                    $("#lbl_loggedTime").text(obj.loggedTime);
+                    $('#CallDetailsModal').modal();
+                }
+            })
+        } catch (errorMessage) {
+            toastr.error(errorMessage)
+        }
+    }
+
+
+    $(document).ready(function () {
+        $(function () {
+            $("#btnsaveContinue").click(function () {
+                //alert("hello");
+                $(".loadingDiv-parent").fadeIn(50);
+                var InboundModel = new Object();
+                InboundModel.id = $('#id').val();
+                var actualPhone = $('#actualPhoneNo').val();
+                var enteredPhone = $('#phoneNo').val();
+                if (!actualPhone || actualPhone.trim() === "")
+                {
+                    actualPhone = enteredPhone;
+                }
+                InboundModel.phoneNo = actualPhone.trim();
+                InboundModel.pnr = $('#pnr').val();
+                InboundModel.referenceId = $('#referenceId').val();
+                InboundModel.name = $('#name').val();
+                InboundModel.callerCategory = $('#callerCategory').val();
+                InboundModel.callingState = $('#callingState').val();
+                InboundModel.language = $('#language').val();
+                InboundModel.qrc = $('#qrc').val();
+                InboundModel.mainType = $('#mainType').val();
+                InboundModel.subType = $('#subType').val();
+                InboundModel.resolution1 = $('#resolution1').val();
+                InboundModel.CaseEscalated = $('#CaseEscalated').val();
+                InboundModel.journeyType = $('#journeyType').val();
+                InboundModel.origin = $('#origin').val();
+                InboundModel.destination = $('#destination').val();
+                InboundModel.flightNo = $('#flightNo').val();
+                InboundModel.penaltyAmt = $('#penaltyAmt').val();
+                var other_selected_service = [];
+                $("input:checkbox[name='other_service_checked']:checked").each(function () {
+                    other_selected_service.push($(this).val());
+                });
+                InboundModel.other_services = other_selected_service.join(", ");
+                InboundModel.paymentType = $('#paymentType').val();
+                InboundModel.paymentCard = $('#paymentCard').val();
+                InboundModel.cardType = $('#cardType').val();
+                InboundModel.payAmount = $('#payAmount').val();
+                InboundModel.bank = $('#bank').val();
+                InboundModel.payment_status = $('#payment_status').val();
+                InboundModel.transactionId = $('#transactionId').val();
+                InboundModel.remarks = $('#remarks').val();
+                InboundModel.registerId = $('#registerId').val();
+                InboundModel.ameyo_userId = $('#ameyo_userId').val();
+                InboundModel.campaignId = $('#campaignId').val();
+                InboundModel.crtObjectId = $('#crtObjectId').val();
+                InboundModel.userCrtObjectId = $('#userCrtObjectId').val();
+                InboundModel.customerId = $('#customerId').val();
+                InboundModel.dialerSessionId = $('#dialerSessionId').val();
+                InboundModel.dispositionName = $('#dispositionName').val();
+                InboundModel.Escalation_remarks = $('#Escalation_remarks').val();
+                InboundModel.Inb_status = $('#Inb_status').val();
+                InboundModel.call_transfer = $('#call_transfer').val();
+                InboundModel.If_yes = $('#If_yes').val();
+                //alert(InboundModel.id);
+                if (InboundModel.phoneNo == null || InboundModel.phoneNo == '' || InboundModel.phoneNo.length == 0) {
+                    $("#phoneNo").focus();
+                    toastr.error('Please Enter PhoneNo')
+                    $(".loadingDiv-parent").fadeOut("slow");
+                    return;
+                }
+                if (InboundModel.name == null || InboundModel.name == '' || InboundModel.name.length == 0) {
+                    $("#name").focus();
+                    toastr.error('Please Enter Name')
+                    $(".loadingDiv-parent").fadeOut("slow");
+                    return;
+                }
+                if (InboundModel.language == null || InboundModel.language == '') {
+                    $("#language").focus();
+                    toastr.error('Please Select Language')
+                    $(".loadingDiv-parent").fadeOut("slow");
+                    return;
+                }
+                if (InboundModel.qrc == null || InboundModel.qrc == '') {
+                    $("#qrc").focus();
+                    toastr.error('Please Select QRC')
+                    $(".loadingDiv-parent").fadeOut("slow");
+                    return;
+                }
+                if (InboundModel.mainType == null || InboundModel.mainType == '') {
+                    $("#mainType").focus();
+                    toastr.error('Please Select MainType')
+                    $(".loadingDiv-parent").fadeOut("slow");
+                    return;
+                }
+                if (InboundModel.subType == null || InboundModel.subType == '') {
+                    $("#subType").focus();
+                    toastr.error('Please Select SubType')
+                    $(".loadingDiv-parent").fadeOut("slow");
+                    return;
+                }
+                if (InboundModel.mainType != '15' && InboundModel.mainType != '16' && InboundModel.mainType != '24' && InboundModel.mainType != '25' && InboundModel.mainType != '36' && InboundModel.mainType != '35')
+                {
+                   // alert(InboundModel.mainType);
+                    if (InboundModel.resolution1 == null || InboundModel.resolution1 == '') {
+                        $("#resolution1").focus();
+                        toastr.error('Please Select Resolution')
+                        $(".loadingDiv-parent").fadeOut("slow");
+                        return;
+                    }
+                }
+
+                if (InboundModel.origin == InboundModel.destination) {
+                    $("#destination").focus();
+                    toastr.error('Origin and Destination Should not be same.')
+                    $(".loadingDiv-parent").fadeOut("slow");
+                    return;
+                }
+
+                if (InboundModel.CaseEscalated == null || InboundModel.CaseEscalated == '') {
+                    $("#CaseEscalated").focus();
+                    toastr.error('Please Select Escalate Case')
+                    $(".loadingDiv-parent").fadeOut("slow");
+                    return;
+                }
+
+                if (InboundModel.phoneNo.length > 0) {
+                    $.ajax({
+                        type: "POST",
+                        url: '@Url.Content("~/")' + "Inbound/PostData",
+                        data: JSON.stringify(InboundModel),
+                        contentType: "application/json;",
+                        dataType: "json",
+                        success: function (data) {
+                            if (data != null) {
+                                if (data != undefined) {
+                                    if (data.status == "success") {
+                                        toastr.success(data.msg)
+                                        $(".loadingDiv-parent").fadeOut("slow");
+                                        $("#referenceId").val(data.resultCode)
+                                        $("#qrc").val('');
+                                        //$("#mainType").val('');
+                                        //$("#subType").val('');
+                                        //$("#resolution1").val('');
+                                        //$("#resolution2").val('');
+                                        $("#remarks").val('');
+                                        $('input[type=checkbox]').prop('checked', false);
+                                        $("#mainType").prop("disabled", true);
+                                        $("#subType").prop("disabled", true);
+                                        $("#resolution1").prop("disabled", true);
+                                        $("#resolution2").prop("disabled", true);
+                                        $('#penaltyAmt').val('');
+                                        $('#penaltyAmt').attr('readonly', 'true');
+                                        $("#Escalation_remarks").val('');
+                                        $("#qrc").focus();
+                                    }
+                                    if (data.status == "error") {
+                                        toastr.error(data.msg)
+                                        $(".loadingDiv-parent").fadeOut("slow");
+                                    }
+                                } else {
+                                    toastr.error('undefined')
+                                    $(".loadingDiv-parent").fadeOut("slow");
+                                }
+                            } else {
+                                $(".loadingDiv-parent").fadeOut("slow");
+                                toastr.error('Something went wrong')
+                                return;
+                            }
+
+                        },
+                        failure: function (response) {
+                            toastr.error(data.responseText)
+                            $(".loadingDiv-parent").fadeOut("slow");
+
+                        },
+                        error: function (response) {
+                            toastr.error(data.responseText)
+                            console.log(data.responseText)
+                            $(".loadingDiv-parent").fadeOut("slow");
+                        }
+                    });
+                }
+                $(".loadingDiv-parent").fadeOut("slow");
+
+            });
+
+        });
+    });
+
+    $(document).ready(function () {
+        $(function () {
+            $("#btndispose").click(function () {
+                var ddtext = $("#mainType option:selected").text();
+                $("#dispositionName").val(ddtext)
+
+                var InboundModel = new Object();
+                InboundModel.phoneNo = $('#phoneNo').val();
+                InboundModel.ameyo_userId = $('#ameyo_userId').val();
+                InboundModel.campaignId = $('#campaignId').val();
+                InboundModel.crtObjectId = $('#crtObjectId').val();
+                InboundModel.userCrtObjectId = $('#userCrtObjectId').val();
+                InboundModel.customerId = $('#customerId').val();
+                InboundModel.dialerSessionId = $('#dialerSessionId').val();
+                InboundModel.dispositionName = $('#dispositionName').val();
+
+                if (InboundModel.phoneNo == null || InboundModel.phoneNo == '') {
+                    $("#phoneNo").focus();
+                    toastr.error('Please Enter Phone No')
+                    $(".loadingDiv-parent").fadeOut("slow");
+                    return;
+                }
+
+                if (InboundModel.campaignId == null || InboundModel.campaignId == '') {
+                    $("#phoneNo").focus();
+                    toastr.error('Invalid Dialer Session')
+                    $(".loadingDiv-parent").fadeOut("slow");
+                    return;
+                }
+
+                if (InboundModel.phoneNo.length > 0) {
+                    $.ajax({
+                        type: "POST",
+                        url: '@Url.Content("~/")' + "Inbound/Dispose_Call",
+                        data: JSON.stringify(InboundModel),
+                        contentType: "application/json;",
+                        dataType: "json",
+                        success: function (data) {
+
+                            if (data != null) {
+                                if (data != undefined) {
+                                    if (data.status == "success") {
+                                        toastr.success(data.msg)
+                                        $(".loadingDiv-parent").fadeOut("slow");
+                                        $("#mainType").val('');
+                                        $("#subType").val('');
+                                        $("#resolution1").val('');
+                                        $("#resolution2").val('');
+                                    }
+                                    if (data.status == "error") {
+                                        toastr.error(data.msg)
+                                        $(".loadingDiv-parent").fadeOut("slow");
+                                    }
+                                } else {
+                                    toastr.error('undefined')
+                                    $(".loadingDiv-parent").fadeOut("slow");
+                                }
+                            } else {
+                                $(".loadingDiv-parent").fadeOut("slow");
+                                toastr.error('Something went wrong')
+                                return;
+                            }
+
+                        },
+                        failure: function (response) {
+                            toastr.error(data.responseText)
+                            $(".loadingDiv-parent").fadeOut("slow");
+
+                        },
+                        error: function (response) {
+                            toastr.error(data.responseText)
+                            console.log(data.responseText)
+                            $(".loadingDiv-parent").fadeOut("slow");
+                        }
+                    });
+                }
+                $(".loadingDiv-parent").fadeOut("slow");
+            });
+        });
+    });
+
+
+    $(function () {
+        $('#maintype').change(function () {
+            var ddtext = $("#maintype option:selected").text();
+            $("#dispositionName").val(ddtext);
+        });
+    });
+
+
+
+    $(document).ready(function () {
+        $.clearfields = function () {
+            $('#paymentType').val('');
+            $("#cardType").val('');
+            $("#paymentCard").val('');
+            $('#payAmount').val('');
+            $('#bank').val('');
+            $('#transactionId').val('');
+            $('#payment_status').val('');
+        }
+    });
+
+    $(document).ready(function () {
+         $('#qrc').change(mainType);
+
+    });
+    function mainType() {
+
+        var url = '@Url.Content("~/")' + "Inbound/getMaintype";
+        var ddlsource = "#qrc";
+        var ddltarget = "#mainType";
+        if ($(ddlsource).val() == "") {
+            toastr.error('Please Give valid Input!')
+            return false;
+        }
+        $.getJSON(url, { id: $(ddlsource).val() }, function (data) {
+            $(ddltarget).empty();
+            $(ddltarget).prop("disabled", false);
+            $(ddltarget).append("<option value=''>" + 'Please Select' + "</option>")
+            $.each(data, function (index, optionData) {
+                $(ddltarget).append("<option value='" + optionData.Value + "'>" + optionData.Text + "</option>");
+            });
+        });
+
+}
+
+
+
+    @*$(document).ready(function () {
+        $("#qrc").change(function () {
+            $("#mainType").empty();
+            $("#subType").empty();
+            $("#resolution").empty();
+            $("#mainType").prop("disabled", true);
+            $("#subType").prop("disabled", true);
+            $("#resolution").prop("disabled", true);
+            var url = '@Url.Content("~/")' + "Inbound/getMaintype";
+            var ddlsource = "#qrc";
+            var ddltarget = "#mainType";
+            if ($(ddlsource).val() == "") {
+                toastr.error('Please Give valid Input!')
+                return false;
+            }
+            $.getJSON(url, { id: $(ddlsource).val() }, function (data) {
+                $(ddltarget).empty();
+                $(ddltarget).prop("disabled", false);
+                $(ddltarget).append("<option value=''>" + 'Please Select' + "</option>")
+                $.each(data, function (index, optionData) {
+                    $(ddltarget).append("<option value='" + optionData.Value + "'>" + optionData.Text + "</option>");
+                });
+            });
+        });
+    });*@
+
+    $(document).ready(function () {
+        $("#mainType").change(function () {
+            $("#subType").empty();
+            $("#resolution1").empty();
+            $("#subType").prop("disabled", true);
+            $("#resolution1").prop("disabled", true);
+            $("#resolution2").empty();
+            $("#resolution2").prop("disabled", true);
+            var url = '@Url.Content("~/")' + "Inbound/getSubtype";
+            var ddlsource = "#mainType";
+            var ddltarget = "#subType";
+            if ($(ddlsource).val() == "") {
+                toastr.error('Please Give valid Input!')
+                return false;
+            }
+            $.getJSON(url, { id: $(ddlsource).val() }, function (data) {
+                $(ddltarget).empty();
+                $(ddltarget).prop("disabled", false);
+                $(ddltarget).append("<option value=''>" + 'Please Select' + "</option>")
+                $.each(data, function (index, optionData) {
+                    $(ddltarget).append("<option value='" + optionData.Value + "'>" + optionData.Text + "</option>");
+                });
+            });
+        });
+    });
+
+
+    $(document).ready(function () {
+        $("#subType").change(function () {
+            $("#resolution1").empty();
+            $("#resolution1").prop("disabled", true);
+            $("#resolution2").empty();
+            $("#resolution2").prop("disabled", true);
+            var url = '@Url.Content("~/")' + "Inbound/getresolution";
+            var ddlsource = "#subType";
+            var ddltarget = "#resolution1";
+            if ($(ddlsource).val() == "") {
+                toastr.error('Please Give valid Input!')
+                return false;
+            }
+            $.getJSON(url, { id: $(ddlsource).val() }, function (data) {
+                $(ddltarget).empty();
+                $(ddltarget).prop("disabled", false);
+                $(ddltarget).append("<option value=''>" + 'Please Select' + "</option>")
+                $.each(data, function (index, optionData) {
+                    $(ddltarget).append("<option value='" + optionData.Value + "'>" + optionData.Text + "</option>");
+                });
+            });
+        });
+    });
+
+    $(document).ready(function () {
+        $("#resolution1").change(function () {
+            $("#resolution2").empty();
+            $("#resolution2").prop("disabled", true);
+            var url = '@Url.Content("~/")' + "Inbound/getresolution2";
+            var ddlsource = "#resolution1";
+            var ddltarget = "#resolution2";
+            if ($(ddlsource).val() == "") {
+                toastr.error('Please Give valid Input!')
+                return false;
+            }
+            $.getJSON(url, { id: $(ddlsource).val() }, function (data) {
+                $(ddltarget).empty();
+                $(ddltarget).prop("disabled", false);
+                $(ddltarget).append("<option value=''>" + 'Please Select' + "</option>")
+                $.each(data, function (index, optionData) {
+                    $(ddltarget).append("<option value='" + optionData.Value + "'>" + optionData.Text + "</option>");
+                });
+            });
+        });
+    });
+
+    //penaltyamt
+    //$(document).ready(function () {
+    //    $("#resolution").change(function () {
+    //        $("#penaltyAmt").val('');
+    //        var ddlsource = "#resolution";
+    //        if ($(ddlsource).val() == "147") {
+    //            $('#penaltyAmt').removeAttr('readonly');
+    //        }
+    //        else {
+    //            $('#penaltyAmt').val('');
+    //            $('#penaltyAmt').attr('readonly', 'true');
+    //        }
+    //    });
+    //});
+
+
+  //If_yes
+    $(document).ready(function () {
+        $("#call_transfer").change(function () {
+            $("#If_yes").val('');
+            var ddlsource = "#call_transfer";
+            if ($(ddlsource).val() == "1") {
+                $('#If_yes').removeAttr('readonly');
+            }
+            else {
+                $('#If_yes').val('');
+                $('#If_yes').attr('readonly', 'true');
+            }
+        });
+    });
+
+
+    $(document).ready(function () {
+        $(function () {
+            $("#mainType").change(function () {
+                $.clearfields();
+                $(".DivPayment").hide();
+                var maintypecode = $("#mainType").val();
+
+                if (maintypecode == null || maintypecode == '') {
+                    $("#mainType").focus();
+                    toastr.error('Please Select Maintype')
+                    $(".loadingDiv-parent").fadeOut("slow");
+                    return;
+                }
+                var url = protocol + "//" + host + "/" + appname + "Inbound/Payment_Tab?id=" + maintypecode;
+                $.ajax({
+                    type: "GET",
+                    url: url,
+                    success: function (data) {
+                        if (data != null) {
+                            if (data != undefined) {
+                                if (data.status == "success") {
+                                    $(".DivPayment").show();
+                                }
+                                else {
+                                    $(".DivPayment").hide();
+                                }
+                            } else {
+                                $(".DivPayment").hide();
+                            }
+                        } else {
+                            $(".DivPayment").hide();
+                        }
+                    },
+                    failure: function (response) {
+                        $(".DivPayment").hide();
+                    },
+                    error: function (response) {
+                        $(".DivPayment").hide();
+                    }
+                })
+                $(".loadingDiv-parent").fadeOut("slow");
+            });
+        });
+    });
+
+
+    $(document).ready(function (e) {
+        $(document).on('click', '.bs-dropdown-to-select-group .dropdown-menu li', function (event) {
+            var $target = $(event.currentTarget);
+            $target.closest('.bs-dropdown-to-select-group')
+				.find('[data-bind="bs-drp-sel-value"]').val($target.attr('data-value'))
+				.end()
+				.children('.dropdown-toggle').dropdown('toggle');
+            $target.closest('.bs-dropdown-to-select-group')
+				.find('[data-bind="bs-drp-sel-label"]').text($target.attr('data-value'));/*$target.text()*/
+            console.log($target.text());
+            return false;
+        });
+
+    });
+
+
+    $(document).ready(function () {
+
+        $("#search").click(function () {
+
+            $("#SetData").empty();
+
+            var searchtype = $("#hdSearchCriteria").val();
+            var input = $("#searchInput").val();
+
+            // If textbox is already masked, use actual value
+            if (searchtype === "PhoneNo") {
+                var actualValue = $("#actualSearchInput").val();
+
+                if (actualValue && actualValue.length > 0) {
+                    input = actualValue;
+                }
+            }
+
+            input = input ? input.trim() : "";
+
+            if (input.length === 0) {
+
+                $("#searchInput").focus();
+
+                toastr.error("Please Supply valid Input");
+
+                $("#DivSearch").hide();
+                $("#DivCallHistory").hide();
+                $("#DivFilter").hide();
+
+                return;
+            }
+
+            console.log("Search Type:", searchtype);
+            console.log("Actual Search Input:", input);
+
+            // Store ORIGINAL number
+            $("#actualSearchInput").val(input);
+
+            $(".loadingDiv-parent").fadeIn(50);
+            $("#LoadingStatus").html("Loading....");
+
+            $.get(
+                protocol + "//" + host + "/" + appname +
+                "Inbound/Get_Call_History?searchno=" +
+                encodeURIComponent(input) +
+                "&searchtype=" +
+                encodeURIComponent(searchtype),
+
+                function (data) {
+
+                    console.log("History Data:", data);
+
+                    if (data && data.length > 0) {
+
+                        $("#DivSearch").show();
+                        $("#DivCallHistory").show();
+                        $("#DivFilter").show();
+
+                        var SetData = $("#SetData");
+
+                        for (var i = 0; i < data.length; i++) {
+
+                            var Data =
+                                "<tr class='even row_" + data[i].sno + "'>" +
+
+                                "<td>" +
+                                "<a href='#' data-toggle='tooltip' " +
+                                "title='Click to View Full Details' " +
+                                "class='btn-sm btn-warning' " +
+                                "onclick='getCallInfo(" + data[i].id + ")'>" +
+                                "<span class='glyphicon glyphicon-eye-open'></span>" +
+                                "</a>" +
+                                "</td>" +
+
+                                "<td>" + data[i].sno + "</td>" +
+                                "<td>" + data[i].date + "</td>" +
+                                "<td>" + data[i].referenceId + "</td>" +
+                                "<td>" + data[i].pnr + "</td>" +
+                                "<td>" + data[i].maintype + "</td>" +
+                                "<td>" + data[i].subtype + "</td>" +
+                                "<td>" + data[i].resolution + "</td>" +
+                                "<td>" + data[i].HighlighttoSupervisor + "</td>" +
+
+                                "</tr>";
+
+                            SetData.append(Data);
+                        }
+
+                        $("#LoadingStatus").html("");
+
+                    }
+                    else {
+
+                        $("#DivSearch").hide();
+                        $("#DivCallHistory").hide();
+                        $("#DivFilter").hide();
+
+                        toastr.info("No call history found");
+                    }
+
+                    // IMPORTANT:
+                    // Search complete aana apram textbox mask
+                    if (searchtype === "PhoneNo") {
+                        $("#searchInput").val(maskPhoneNumber(input));
+                    }
+
+                    $(".loadingDiv-parent").fadeOut("slow");
+                }
+            );
+
+            // Other fields
+            if (searchtype === "PhoneNo") {
+
+                $("#pnr").val('');
+                $("#referenceId").val('');
+
+                // Actual number
+                $("#actualPhoneNo").val(input);
+
+                // Masked number
+                $("#phoneNo").val(maskPhoneNumber(input));
+
+            }
+            else if (searchtype === "ReferenceNo") {
+
+                $("#phoneNo").val("");
+                $("#actualPhoneNo").val("");
+                $("#pnr").val("");
+                $("#referenceId").val(input);
+
+            }
+            else if (searchtype === "PNR") {
+
+                $("#phoneNo").val("");
+                $("#actualPhoneNo").val("");
+                $("#referenceId").val("");
+                $("#pnr").val(input);
+            }
+
+        });
+
+    });
+    function maskPhoneNumber(phone) {
+        phone = String(phone || "").trim();
+        if (phone.length <= 4) {
+            return phone;
+        }
+        return "*".repeat(phone.length - 4) + phone.slice(-4);
+    }
+
+    $('#CntrlCallhistory').click(function () {
+        $('#DivCallHistory').toggle('slow');
+    });
+
+
+    $(document).ready(function () {
+        var actualPhone = $("#actualPhoneNo").val();
+        if (actualPhone && actualPhone.length > 0) {
+            $("#phoneNo").val(maskPhoneNumber(actualPhone));
+        }
+    });
+
+    function DialCustomer() {
+    var actualPhone = $("#actualPhoneNo").val();
+
+    if (!actualPhone || actualPhone.length === 0) {
+        toastr.error("Phone number not available");
+        return;
+    }
+
+    $.ajax({
+        type: "GET",
+        url: '@Url.Action("EncryptPhone", "Inbound")',
+        data: { phoneNo: actualPhone },
+        success: function (data) {
+            if (data.status === "success") {
+                // encrypted number available here
+                var encryptedPhone = data.encryptedPhone;
+                console.log("Encrypted Phone:", encryptedPhone);
+                // CrossSell dialer URL logic goes here
+            }
+            else {
+                toastr.error(data.msg);
+            }
+        },
+        error: function () {
+            toastr.error("Unable to encrypt phone number");
+        }
+    });
+
+
+    }
+
+    $(document).ready(function () {
+
+        var searchInput = $("#searchInput").val();
+        var searchType = $("#hdSearchCriteria").val();
+        searchInput = searchInput ? searchInput.trim() : "";
+        searchType = searchType ? searchType.trim() : "";
+        console.log("Search Input:", searchInput);
+        console.log("Search Type:", searchType);
+        if (searchInput.length > 0) {
+            $("#actualSearchInput").val(searchInput);
+            console.log("Auto Search Triggered");
+            setTimeout(function () {
+                $("#search").trigger("click");
+            }, 300);
+        }
+
+    });
+
+</script>

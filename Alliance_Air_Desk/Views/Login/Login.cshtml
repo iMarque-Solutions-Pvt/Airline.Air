@@ -1,0 +1,124 @@
+﻿@model Alliance_Air_Desk.Models.Model.LoginModel
+
+@{
+    Layout = "~/Views/Shared/_LoginLayout.cshtml";
+    ViewBag.Title = "Login";
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Login</title>
+</head>
+<body>
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/jqueryval")
+
+
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+        <div class="container">
+            <div class="row mgTp">
+                <div class="col-md-6 col-md-offset-3">
+                    @*<form class="col-md-6 offset-md-3">*@
+
+                    <div class="panel panel-login">
+                        <div class="panel-body">
+                            <div class="row">
+                                <div class="col-lg-12">
+
+                                    <form id="login-form" action="#" method="post" role="form" style="display: block;">
+                                        <h3 class="title">Please sign in</h3>
+                                        <hr class="divisor">
+
+                                        <div class="form-group">
+                                            <label for="exampleInputEmail1">Username</label>
+                                            @Html.EditorFor(model => model.userId, new { htmlAttributes = new { @class = "form-control" } })
+                                            @Html.ValidationMessageFor(model => model.userId, "", new { @class = "text-danger" })
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="exampleInputPassword1">Password</label>
+                                            @Html.EditorFor(model => model.password, new { htmlAttributes = new { @class = "form-control" } })
+                                            @Html.ValidationMessageFor(model => model.password, "", new { @class = "text-danger" })
+                                        </div>
+                                        <div class="form-check">
+                                            <input type="checkbox" class="form-check-input" id="exampleCheck1">
+                                            <label class="form-check-label" for="exampleCheck1">Remember me</label>
+                                        </div>
+                                        <button type="submit" id="btnlogin" class="btn btn-primary topBtn"><i class="fa fa-sign-in"></i> Sign in</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    }
+</body>
+
+</html>
+
+
+
+
+<script>
+    $(document).ready(function () {
+        toastr.options = {
+            "closeButton": true,
+            "debug": false,
+            "positionClass": "toast-top-right",
+            "onclick": null,
+            "showDuration": "1000",
+            "hideDuration": "1000",
+            "timeOut": "5000",
+            "extendedTimeOut": "1000",
+            "showEasing": "swing",
+            "hideEasing": "linear",
+            "showMethod": "fadeIn",
+            "hideMethod": "fadeOut",
+            "newestOnTop": true,
+            "progressBar": true,
+            "preventDuplicates": false
+        };
+             
+        
+
+        if ('@ViewBag.Message' != null && '@ViewBag.Message' != "") {
+            toastr.success('@ViewBag.Message')
+        }
+
+        if ('@ViewBag.ErrorMessage' != null && '@ViewBag.ErrorMessage' != "") {
+            toastr.error('@ViewBag.ErrorMessage')
+        }
+
+        if ('@ViewBag.Info' != null && '@ViewBag.Info' != "") {
+            toastr.info('@ViewBag.Info')
+        }
+
+        if ('@ViewBag.Warning' != null && '@ViewBag.Warning' != "") {
+            toastr.warning('@ViewBag.Warning')
+        }
+    });
+</script>
+
+
+<style>
+    .title{
+    color:#007bff;
+}
+
+.mgTp{
+    margin-top:10%;
+}
+
+.topBtn{
+    margin-top:15px;
+}
+
+</style>

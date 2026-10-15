@@ -1,0 +1,123 @@
+﻿
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Index</title>
+
+    <script src="//code.jquery.com/jquery-2.2.4.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+    <link href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" rel="stylesheet" />
+
+    @Html.Raw(ViewBag.Message)
+
+   
+
+
+
+</head>
+<body>
+    <div> 
+    </div>
+</body>
+</html>
+
+
+@*<script type="text/javascript">
+    $(document).ready(function () {
+       if('@TempData["message"]' == "Added"){
+           toastr.success('Added'),
+           toastr.options = {
+               "closeButton": true,
+               "debug": false,
+               "newestOnTop": false,
+               "progressBar": false,
+               "positionClass": "toast-top-right",
+               "preventDuplicates": false,
+               "onclick": null,
+               "showDuration": "300",
+               "hideDuration": "1000",
+               "timeOut": "5000",
+               "extendedTimeOut": "1000",
+               "showEasing": "swing",
+               "hideEasing": "linear",
+               "showMethod": "fadeIn",
+               "hideMethod": "fadeOut"
+           }
+       }
+       else{ }
+    });
+</script>*@
+
+
+
+<script>
+
+    $(document).ready(function () {
+        toastr.options = {
+            "closeButton": true,
+            "debug": false,
+            "positionClass": "toast-bottom-right",
+            "onclick": null,
+            "showDuration": "1000",
+            "hideDuration": "1000",
+            "timeOut": "5000",
+            "extendedTimeOut": "1000",
+            "showEasing": "swing",
+            "hideEasing": "linear",
+            "showMethod": "fadeIn",
+            "hideMethod": "fadeOut",
+            "newestOnTop": true,
+            "progressBar": true,            
+            "preventDuplicates": false,
+            
+            
+        };
+
+        //toastr.error('This is a success notification from toastr.')
+
+        //$('#toastr-success').click(function () {
+        //    toastr.success('This is a success notification from toastr.')
+        //});
+
+        //$('#toastr-info').click(function () {
+        //    toastr.info('This is an information notification provided by toastr.')
+        //});
+
+        //$('#toastr-warning').click(function () {
+        //    toastr.warning('This is a warning notification provided by toastr.')
+        //});
+
+        //$('#toastr-error').click(function () {
+        //    toastr.error('This is an error notification provided by toastr.')
+        //});
+    });
+</script>  
+
+
+
+@*<script type="text/javascript">
+        $(document).ready(function () {
+           if('@TempData["message"]' == "Added"){
+              toastr.success('Added');
+           }
+           else{ }
+        });
+    </script>*@ 
+
+
+ @*$(function () {
+            $("#btnlogin").click(function () {
+                var ddlsource = "#userId";
+                var result = $(ddlsource).val();
+                if (result.length == 0) {
+                    toastr.warning('Please Enter Username')
+                }
+            })
+        });*@

@@ -1,0 +1,25 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<h2>API Testing</h2>
+<hr />
+
+<h4>GET_ORG</h4>
+
+<div class="form-horizontal">
+    <div class="col-md-12" style="margin-top:20px">
+        @Html.DropDownList("ObjList", (IEnumerable<SelectListItem>)ViewBag.origin, new { id = "ddlOrigin", @class = "form-control" })
+    </div>
+</div>
+
+@*<h4>GET_DES</h4>
+
+<div class="form-horizontal">
+    <div class="col-md-12" style="margin-top:20px">
+        @Html.DropDownList("ObjList", (IEnumerable<SelectListItem>)ViewBag.Destination, new { id = "ddlDestination", @class = "form-control" })
+    </div>
+</div>*@

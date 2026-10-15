@@ -1,0 +1,151 @@
+﻿@model Alliance_Air_Desk.Models.Model.ReportModel
+
+@{
+    ViewBag.Title = "Downloads";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<h4>Downloads</h4>
+
+
+@using (Html.BeginForm("Downloads", "Reports", FormMethod.Post, new { @class = "my_form" }))
+{
+    @Html.AntiForgeryToken()
+    <div class="form-horizontal" style="margin-top:20px">
+        <hr />
+        @if (@ViewBag.Message != null)
+        {
+            <div class="alert alert-success-alt alert-dismissable">
+                <span class="glyphicon glyphicon-certificate"></span>
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
+                    ×
+                </button><strong>Success!</strong> @ViewBag.Message
+            </div>
+        }
+        @if (@ViewBag.ErrorMessage != null)
+        {
+            <div class="alert alert-danger-alt alert-dismissable">
+                <span class="glyphicon glyphicon-certificate"></span>
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
+                    ×
+                </button><strong>Error!</strong> @ViewBag.ErrorMessage
+            </div>
+        }
+
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group">
+            @Html.LabelFor(model => model.fromDate, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-3">
+                @Html.EditorFor(model => model.fromDate, new { htmlAttributes = new { @class = "form-control " } })
+                @Html.ValidationMessageFor(model => model.fromDate, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.toDate, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-3">
+                @Html.EditorFor(model => model.toDate, new { htmlAttributes = new { @class = "form-control", } })
+                @Html.ValidationMessageFor(model => model.toDate, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.reportName, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-3">
+                @Html.DropDownListFor(m => m.reportName, Model.reporNametList, "Please select", new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.reportName, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        @*<input type="hidden" id="hdCampainid" name="hdCampains" value="" />*@
+        <input type="hidden" id="hdReportName" name="hdReportName" />
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" id="btnGenerate" value="Generate Report" class="btn btn-primary" />
+            </div>
+        </div>
+
+    </div>
+}
+
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+
+
+<script>
+    $(document).ready(function () {
+        $(document).ready(function () {
+
+            window.setTimeout(function () {
+                $(".alert").fadeTo(1000, 0).slideUp(1000, function () {
+                    $(this).remove();
+                });
+            }, 4000);
+
+        });
+
+    });
+</script>
+
+<script>
+    $(document).ready(function () {
+        $("#reportName").change(function () {
+            var ddtext = $("#reportName option:selected").text();
+            $("#hdReportName").val(ddtext);
+        })
+    })
+</script>
+
+<script>
+    $('#btnGenerate').click(function () {
+        $("#loading").fadeOut(5000);
+    });
+</script>
+
+
+<script>
+    $(document).ready(function () {
+        toastr.options = {
+            "closeButton": true,
+            "debug": false,
+            "positionClass": "toast-bottom-right",
+            "onclick": null,
+            "showDuration": "1000",
+            "hideDuration": "1000",
+            "timeOut": "5000",
+            "extendedTimeOut": "1000",
+            "showEasing": "swing",
+            "hideEasing": "linear",
+            "showMethod": "fadeIn",
+            "hideMethod": "fadeOut",
+            "newestOnTop": true,
+            "progressBar": true,
+            "preventDuplicates": false
+        };
+
+        if ('@ViewBag.Message' != null && '@ViewBag.Message' != "") {
+            toastr.success('@ViewBag.Message')
+        }
+
+        if ('@ViewBag.ErrorMessage' != null && '@ViewBag.ErrorMessage' != "") {
+            toastr.error('@ViewBag.ErrorMessage')
+        }
+
+        if ('@ViewBag.Info' != null && '@ViewBag.Info' != "") {
+            toastr.info('@ViewBag.Info')
+        }
+
+        if ('@ViewBag.Warning' != null && '@ViewBag.Warning' != "") {
+            toastr.warning('@ViewBag.Warning')
+        }
+    });
+</script>
+
+

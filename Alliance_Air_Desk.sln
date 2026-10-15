@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Alliance_Air_Desk", "Alliance_Air_Desk\Alliance_Air_Desk.csproj", "{306623CA-E965-427C-AAD2-296889F6640C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Alliance_Air_Desk.Tests", "Alliance_Air_Desk.Tests\Alliance_Air_Desk.Tests.csproj", "{9DD14D41-D193-49B0-9D61-00DC7AF6C3A2}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{306623CA-E965-427C-AAD2-296889F6640C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{306623CA-E965-427C-AAD2-296889F6640C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{306623CA-E965-427C-AAD2-296889F6640C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{306623CA-E965-427C-AAD2-296889F6640C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9DD14D41-D193-49B0-9D61-00DC7AF6C3A2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9DD14D41-D193-49B0-9D61-00DC7AF6C3A2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9DD14D41-D193-49B0-9D61-00DC7AF6C3A2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9DD14D41-D193-49B0-9D61-00DC7AF6C3A2}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

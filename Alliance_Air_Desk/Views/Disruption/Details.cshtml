@@ -1,0 +1,515 @@
+﻿@model IEnumerable<Alliance_Air_Desk.Models.Model.DisruptionModel>
+@using GridMvc.Html
+@{
+    ViewBag.Title = "Details";
+    WebGrid webGrid = new WebGrid(source: Model, canSort: false, canPage: false);
+}
+
+
+<h3>Disruption Management</h3>
+<hr />
+
+@*<p>
+        @Html.ActionLink("Create New", "Create")
+    </p>
+
+    <table class="table table-responsive">
+        <tr>
+
+            <th>
+            </th>
+
+            <th>
+                @Html.DisplayNameFor(model => model.sno)
+            </th>
+
+            <th>
+                @Html.DisplayNameFor(model => model.flight_number)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.intimation_refno)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.origin)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.destination)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.actual_departure)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.actual_arrival)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.revised_departure)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.revised_arrival)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.disruption_type)
+            </th>
+
+            <th>
+                @Html.DisplayNameFor(model => model.remarks)
+            </th>
+
+        </tr>
+
+    @foreach (var item in Model) {
+        <tr>
+
+
+            <td>
+                <button type='submit' onclick='getDetails(@item.rowid)' class='btn btn-primary' value=''>View</button>
+            </td>
+
+
+            <td>
+                @Html.DisplayFor(modelItem => item.sno)
+            </td>
+
+            <td>
+                @Html.DisplayFor(modelItem => item.flight_number)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.intimation_refno)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.origin)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.destination)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.actual_departure)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.actual_arrival)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.revised_departure)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.revised_arrival)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.disruption_type)
+            </td>
+
+            <td>
+                @Html.DisplayFor(modelItem => item.remarks)
+            </td>
+
+        </tr>
+    }
+
+    </table>*@
+
+<style type="text/css">
+
+    .custom-table {
+        width: 100%;
+        height: 500px; /* Adjust height as needed */
+        overflow:auto;
+    }
+</style>
+
+@if (Model != null)
+{
+    <div class="table-responsive">
+        <div style="width:100%;display:flex;align-content:center;" class="table table-striped table-bordered table-sm custom-table">
+
+            @Html.Grid(Model).Columns(columns =>
+       {
+
+
+           //if (@Session["Privilege"] != null)
+           //{
+           //    if (Convert.ToInt32(@Session["Privilege"]) <= 5)
+           //    {
+
+           //        columns.Add().Titled("Edit").Encoded(false).Sanitized(false).SetWidth(30)
+           //     .RenderValueAs(c => Html.ActionLink("Edit", "Management", new { id = c.guid }, new { @class = "btn btn-primary" })).Filterable(false);
+
+           //    }
+           //}
+
+
+           columns.Add().Titled("View").Sanitized(false).Encoded(false)
+              .RenderValueAs(data => "<button type='submit' onclick='getDetails(" + data.rowid + ")' class='btn btn-primary' value=''>View</button>");
+
+
+           columns.Add(e => e.sno).Titled("SNo").Filterable(true);
+           columns.Add(e => e.disruption_type).Titled("Type").Filterable(true);
+           columns.Add(e => e.flight_number).Titled("Flight #").Filterable(true);
+           columns.Add(e => e.origin).Titled("Origin").Filterable(true);
+           columns.Add(e => e.destination).Titled("Destination").Filterable(true);
+           columns.Add(e => e.actual_departure).Titled("Actual Departure").Filterable(true);
+           columns.Add(e => e.actual_arrival).Titled("Actual Arrival").Filterable(true);
+           columns.Add(e => e.revised_departure).Titled("Revised Departure").Filterable(true);
+           columns.Add(e => e.revised_arrival).Titled("Revised Arrival").Filterable(true);
+           columns.Add(e => e.status).Titled("Status").Filterable(true);
+           columns.Add(e => e.mail_received_time).Titled("Mail Received Time").Filterable(true);
+
+
+           if (@Session["Privilege"] != null)
+           {
+               if (Convert.ToInt32(@Session["Privilege"]) <= 4)
+               {
+                   columns.Add().Titled("SMS").Sanitized(false).Encoded(false)
+              .RenderValueAs(data => "<button type='submit' onclick='getSMSDetails(" + data.rowid + ")' class='btn btn-default btn-outline btn-sm' value=''>SMS Temp.</button>");
+               }
+           }
+       }).WithPaging(10).Sortable(true).EmptyText("No Record Found")
+        </div>
+    </div>
+}
+else
+{
+    <div class="table-responsive">
+        <div style="width:100%;" class="table table-striped table-bordered table-sm">
+            <p>No Record Found</p>
+        </div>
+    </div>
+}
+
+
+<link href="@Url.Content("~/Content/Gridmvc.css")" rel="stylesheet" />
+<script src="@Url.Content("~/Scripts/jquery-3.4.1.min.js")"></script>
+<script src="@Url.Content("~/Scripts/gridmvc.min.js")"></script>
+
+<!-- Modal -->
+<div id="DisruptionDetailsModal" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Details</h4>
+            </div>
+            <div class="modal-body">
+
+                <div class="row">
+                    <div class="col-xs-12 col-sm-4 col-md-4">
+                        <label style="font-weight:bold;">Disruption Type : </label>
+                    </div>
+                    <div class="col-xs-12 col-sm-4 col-md-4">
+                        <label id="disruption_type" style="font-weight:bold;"></label>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-xs-12 col-sm-4 col-md-4">
+                        <label style="font-weight:bold;">Intimation Ref. # : </label>
+                    </div>
+                    <div class="col-xs-12 col-sm-4 col-md-4">
+                        <label id="intimation_refno" style="font-weight:bold;"></label>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-xs-12 col-sm-4 col-md-4">
+                        <label style="font-weight:bold;">Flight #: </label>
+                    </div>
+                    <div class="col-xs-12 col-sm-4 col-md-4">
+                        <label id="flight_number" style="font-weight:bold;"></label>
+                    </div>
+                </div>
+
+
+                <div class="row">
+                    <div class="col-xs-12 col-sm-4 col-md-4">
+                        <label style="font-weight:bold;">Origin : </label>
+                    </div>
+                    <div class="col-xs-12 col-sm-4 col-md-4">
+                        <label id="origin" style="font-weight:bold;"></label>
+                    </div>
+                </div>
+
+
+                <div class="row">
+                    <div class="col-xs-12 col-sm-4 col-md-4">
+                        <label style="font-weight:bold;">Destination : </label>
+                    </div>
+                    <div class="col-xs-12 col-sm-4 col-md-4">
+                        <label id="destination" style="font-weight:bold;"></label>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-xs-12 col-sm-4 col-md-4">
+                        <label style="font-weight:bold;">Revised Origin : </label>
+                    </div>
+                    <div class="col-xs-12 col-sm-4 col-md-4">
+                        <label id="revised_origin" style="font-weight:bold;"></label>
+                    </div>
+                </div>
+
+
+                <div class="row">
+                    <div class="col-xs-12 col-sm-4 col-md-4">
+                        <label style="font-weight:bold;">Revised Destination : </label>
+                    </div>
+                    <div class="col-xs-12 col-sm-4 col-md-4">
+                        <label id="revised_destination" style="font-weight:bold;"></label>
+                    </div>
+                </div>
+
+
+                <div class="row">
+                    <div class="col-xs-12 col-sm-4 col-md-4">
+                        <label style="font-weight:bold;">Actual Departure : </label>
+                    </div>
+                    <div class="col-xs-12 col-sm-4 col-md-4">
+                        <label id="actual_departure" style="font-weight:bold;"></label>
+                    </div>
+                </div>
+
+
+                <div class="row">
+                    <div class="col-xs-12 col-sm-4 col-md-4">
+                        <label style="font-weight:bold;">Actual Arrival : </label>
+                    </div>
+                    <div class="col-xs-12 col-sm-4 col-md-4">
+                        <label id="actual_arrival" style="font-weight:bold;"></label>
+                    </div>
+                </div>
+
+
+                <div class="row">
+                    <div class="col-xs-12 col-sm-4 col-md-4">
+                        <label style="font-weight:bold;">Revised Departure : </label>
+                    </div>
+                    <div class="col-xs-12 col-sm-4 col-md-4">
+                        <label id="revised_departure" style="font-weight:bold;"></label>
+                    </div>
+                </div>
+
+
+                <div class="row">
+                    <div class="col-xs-12 col-sm-4 col-md-4">
+                        <label style="font-weight:bold;">Revised Arrival : </label>
+                    </div>
+                    <div class="col-xs-12 col-sm-4 col-md-4">
+                        <label id="revised_arrival" style="font-weight:bold;"></label>
+                    </div>
+                </div>
+
+
+                <div class="row">
+                    <div class="col-xs-12 col-sm-4 col-md-4">
+                        <label style="font-weight:bold;">SMS : </label>
+                    </div>
+                    <div class="col-xs-12 col-sm-4 col-md-4">
+                        <label id="sms" style="font-weight:bold;"></label>
+                    </div>
+                </div>
+
+
+                <div class="row">
+                    <div class="col-xs-12 col-sm-4 col-md-4">
+                        <label style="font-weight:bold;">Email : </label>
+                    </div>
+                    <div class="col-xs-12 col-sm-4 col-md-4">
+                        <label id="email" style="font-weight:bold;"></label>
+                    </div>
+                </div>
+
+
+                <div class="row">
+                    <div class="col-xs-12 col-sm-4 col-md-4">
+                        <label style="font-weight:bold;">Out Calling : </label>
+                    </div>
+                    <div class="col-xs-12 col-sm-4 col-md-4">
+                        <label id="out_calling" style="font-weight:bold;"></label>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-xs-12 col-sm-4 col-md-4">
+                        <label style="font-weight:bold;">Mail Received Time : </label>
+                    </div>
+                    <div class="col-xs-12 col-sm-4 col-md-4">
+                        <label id="mail_received_time" style="font-weight:bold;"></label>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-xs-12 col-sm-4 col-md-4">
+                        <label style="font-weight:bold;">Action Time : </label>
+                    </div>
+                    <div class="col-xs-12 col-sm-4 col-md-4">
+                        <label id="action_time" style="font-weight:bold;"></label>
+                    </div>
+                </div>
+
+
+
+                <div class="row">
+                    <div class="col-xs-12 col-sm-4 col-md-4">
+                        <label style="font-weight:bold;">Remarks : </label>
+                    </div>
+                    <div class="col-xs-12 col-sm-4 col-md-4">
+                        <label id="remarks" style="font-weight:bold;"></label>
+                    </div>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+
+
+
+
+<!-- Modal -->
+<div id="SMSContentModal" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Details</h4>
+            </div>
+            <div class="modal-body">
+
+                <div class="row">
+                    <div>
+                        <label style="font-weight:bold;">Domestic Template : </label>
+                        <br />
+                        <textarea id="domestic_template" rows="5" cols="60" class="form-control" style="font-weight:bold;"></textarea>
+                    </div>
+                </div>
+
+                <br />
+                <br />
+
+                <div class="row">
+
+                    <div>
+                        <label style="font-weight:bold;">International Template : </label>
+                        <br />
+                        <textarea id="international_template" rows="5" cols="60" class="form-control" style="font-weight:bold;"></textarea>
+                    </div>
+                </div>
+
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+
+
+<script type="text/javascript">
+
+    //function getSMSDetails() {
+
+    //    $('#SMSContentModal').modal();
+    //}
+
+    var protocol = $(location).attr('protocol');
+    var host = $(location).attr('host');
+    var hostname = $(location).attr('hostname');
+    var pathName = $(location).attr('pathname').split('/')[1] + "/";
+    var appname;
+
+    if (hostname == 'localhost') {
+        appname = "";
+    }
+    else {
+        appname = pathName;
+    }
+
+
+    function getDetails(ID) {
+        try {
+            var url = protocol + "//" + host + "/" + appname + "Disruption/GetDisruptionById?id=" + ID;
+            $("#ModalTitle").html("Update Template");
+            //$("#DisruptionDetailsModal").modal("show");
+            $.ajax({
+                type: "GET",
+                url: url,
+                success: function (data) {
+                    var obj = JSON.parse(data);
+                    $("#rowid").text(obj.rowid);
+                    $("#flight_number").text(obj.flight_number);
+                    $("#intimation_refno").text(obj.intimation_refno);
+                    $("#origin").text(obj.origin);
+                    $("#destination").text(obj.destination);
+                    $("#revised_origin").text(obj.revised_origin);
+                    $("#revised_destination").text(obj.revised_destination);
+                    $("#actual_departure").text(obj.actual_departure);
+                    $("#actual_arrival").text(obj.actual_arrival);
+                    $("#revised_departure").text(obj.revised_departure);
+                    $("#revised_arrival").text(obj.revised_arrival);
+                    $("#disruption_type").text(obj.disruption_type);
+                    $("#sms").text(obj.sms);
+                    $("#email").text(obj.email);
+                    $("#out_calling").text(obj.out_calling);
+                    $("#mail_received_time").text(obj.mail_received_time);
+                    $("#action_time").text(obj.action_time);
+                    $("#remarks").text(obj.remarks);
+                    $("#domestic_template").text(obj.domestic_template);
+                    $("#international_template").text(obj.international_template);
+
+                    $('#DisruptionDetailsModal').modal();
+                }
+            })
+
+        } catch (errorMessage) {
+            toastr.error(errorMessage)
+        }
+    }
+
+
+    function getSMSDetails(ID) {
+        try {
+            var url = protocol + "//" + host + "/" + appname + "Disruption/GetDisruptionById?id=" + ID;
+            $("#ModalTitle").html("Update Template");
+            $("#Modal").modal("show");
+            $.ajax({
+                type: "GET",
+                url: url,
+                success: function (data) {
+                    var obj = JSON.parse(data);
+                    $("#rowid").text(obj.rowid);
+                    $("#flight_number").text(obj.flight_number);
+                    $("#intimation_refno").text(obj.intimation_refno);
+                    $("#origin").text(obj.origin);
+                    $("#destination").text(obj.destination);
+                    $("#actual_departure").text(obj.actual_departure);
+                    $("#actual_arrival").text(obj.actual_arrival);
+                    $("#revised_departure").text(obj.revised_departure);
+                    $("#revised_arrival").text(obj.revised_arrival);
+                    $("#disruption_type").text(obj.disruption_type);
+                    $("#sms").text(obj.sms);
+                    $("#email").text(obj.email);
+                    $("#out_calling").text(obj.out_calling);
+                    $("#remarks").text(obj.remarks);
+                    $("#domestic_template").text(obj.domestic_template);
+                    $("#international_template").text(obj.international_template);
+
+                    $('#SMSContentModal').modal();
+                }
+            })
+
+        } catch (errorMessage) {
+            toastr.error(errorMessage)
+        }
+    }
+
+</script>

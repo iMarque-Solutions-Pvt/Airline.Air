@@ -1,0 +1,68 @@
+﻿@model IEnumerable<Alliance_Air_Desk.Models.Model.Hourly_Dashboard>
+
+
+
+@using GridMvc.Html
+@{
+    ViewBag.Title = "Details";
+    WebGrid webGrid = new WebGrid(source: Model, canSort: false, canPage: false);
+}
+
+
+@if (Model != null)
+{
+    <div class="table-responsive">
+        <div style="width:100%; overflow-x:auto;" class="table table-striped table-bordered table-sm">
+            @Html.Grid(Model).Columns(columns =>
+       {
+
+           columns.Add(e => e.name).Titled("Agent Name").Filterable(true);
+           columns.Add(e => e.empCode).Titled("EmpCode").Filterable(true);
+           //columns.Add(e => e.privilege).Titled("privilege").Filterable(true);
+           columns.Add(e => e.region).Titled("Region").Filterable(true);
+           columns.Add(e => e.date).Titled("Date").Filterable(true);
+           columns.Add(e => e.total).Titled("Total").Filterable(true);
+
+           columns.Add(e => e.six).Titled("6").Filterable(true);
+           columns.Add(e => e.seven).Titled("7").Filterable(true);
+           columns.Add(e => e.eight).Titled("8").Filterable(true);
+           columns.Add(e => e.nine).Titled("9").Filterable(true);
+           columns.Add(e => e.ten).Titled("10").Filterable(true);
+           columns.Add(e => e.eleven).Titled("11").Filterable(true);
+           columns.Add(e => e.twelve).Titled("12").Filterable(true);
+           columns.Add(e => e.thirteen).Titled("13").Filterable(true);
+           columns.Add(e => e.fourteen).Titled("14").Filterable(true);
+           columns.Add(e => e.fifteen).Titled("15").Filterable(true);
+           columns.Add(e => e.sixteen).Titled("16").Filterable(true);
+           columns.Add(e => e.seventeen).Titled("17").Filterable(true);
+           columns.Add(e => e.eighteen).Titled("18").Filterable(true);
+           columns.Add(e => e.nineteen).Titled("19").Filterable(true);
+           columns.Add(e => e.twenty).Titled("20").Filterable(true);
+           columns.Add(e => e.twentyOne).Titled("21").Filterable(true);
+           columns.Add(e => e.twentyTwo).Titled("22").Filterable(true);
+           columns.Add(e => e.twentyThree).Titled("23").Filterable(true);
+
+           columns.Add(e => e.zero).Titled("0").Filterable(true);
+           columns.Add(e => e.one).Titled("1").Filterable(true);
+           columns.Add(e => e.two).Titled("2").Filterable(true);
+           columns.Add(e => e.three).Titled("3").Filterable(true);
+           columns.Add(e => e.four).Titled("4").Filterable(true);
+           columns.Add(e => e.five).Titled("5").Filterable(true);
+
+       }).WithPaging(10).Sortable(true).EmptyText("No Record Found")
+        </div>
+    </div>
+}
+else
+{
+    <div class="table-responsive">
+        <div style="width:100%; overflow-x:auto;" class="table table-striped table-bordered table-sm">
+            <p>No Record Found</p>
+        </div>
+    </div>
+}
+
+
+<link href="@Url.Content("~/Content/Gridmvc.css")" rel="stylesheet" />
+<script src="@Url.Content("~/Scripts/jquery-3.4.1.min.js")"></script>
+<script src="@Url.Content("~/Scripts/gridmvc.min.js")"></script>
